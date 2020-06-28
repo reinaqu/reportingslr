@@ -19,11 +19,11 @@ WHITE_LITERATURE_LABEL = "White literature"
 GREY_LITERATURE_LABEL = "Grey literature"
 UNKNOWN_LABEL = "Unknown"
 
-def load_report_csv(filename,encoding='utf-8'):
+def load_report_csv(filename,enc='utf-8'):
     ''' Read the csv springer file and returns a dictionary with the ID_PAPER as key and
         a DicReader entry as values 
     '''
-    with open(filename,encoding) as f:
+    with open(filename,encoding=enc) as f:
         lector = csv.DictReader(f,delimiter=';')
         return {record[ID_PAPER]:record for record in lector}
 
@@ -100,7 +100,7 @@ def is_grey_literature(ref_tuple):
     
 
 if __name__ == "__main__":
-    references=load_report_csv("../data/report.0.0.92.csv")
+    references=load_report_csv("../data/report.0.0.92-utf8.csv")
     #print_report_items(references)
     dict_types= count_references_by_type_of_literature(references)
     print(dict_types)

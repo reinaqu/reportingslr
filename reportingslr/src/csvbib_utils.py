@@ -8,11 +8,12 @@ import csv
 from csv import DictReader
 from collections import Counter, defaultdict
 import logging
-from graphicsutils import *
+from _collections import OrderedDict
 
 ID_PAPER ="ID Paper"
 TITLE ="Title"
 TYPE = "Type"
+YEAR = "Year"
 GREY_LITERATURE=["blog", "wiki page", "website", "github page", "white paper"]
 WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book chapter","report","arxiv", "master thesis", "phd thesis"]
 WHITE_LITERATURE_LABEL = "White literature"
@@ -73,18 +74,23 @@ def mark_as_duplicated(references, id):
         logging.info(id+ref_tuple['Status/Selection']+str(res))
     return res
 
-def count_references_by_literature_type(references):
-    types=[  literature_type(ref_tuple) for ref_tuple in references.values()]
-    return Counter(types)
+def count_references_by_literature_type(references, filter=None):
+    return count_references_by_property(references, lambda r:literature_type(r), filter)
     
 
 def count_references_by_publication_type(references, filter=None):
-    if (filter == None):
-        types=[normalize(ref_tuple[TYPE]) for ref_tuple in references.values()]
-    else:
-        types=[normalize(ref_tuple[TYPE]) for ref_tuple in references.values() if filter(ref_tuple)]
-    return Counter(types)
+    return count_references_by_property(references, lambda r:normalize(r[TYPE]), filter)
     
+def count_references_by_year(references, filter=None):
+    c= count_references_by_property(references, lambda r:r[YEAR], filter)
+    return OrderedDict(sorted(c.items()))
+
+def count_references_by_property(references, property, filter=None):
+    if (filter == None):
+        types=[property(ref_tuple) for ref_tuple in references.values()]
+    else:
+        types=[property(ref_tuple) for ref_tuple in references.values() if filter(ref_tuple)]
+    return Counter(types)
 
 def normalize(s):
     return s.strip().lower().capitalize()

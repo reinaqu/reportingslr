@@ -7,7 +7,6 @@ Created on 27 may. 2020
 import csv
 from csv import DictReader
 from collections import Counter, defaultdict
-from _sre import ascii_tolower
 import logging
 from graphicsutils import *
 

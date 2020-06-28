@@ -10,7 +10,7 @@ from graphicsutils import *
 if __name__ == "__main__":
     references=load_report_csv("../data/report.0.0.92-utf8.csv",)
     #print_report_items(references)
-    dict_lit_types= count_references_by_type_of_literature(references)
+    dict_lit_types= count_references_by_literature_type(references)
     print(dict_lit_types)
     #create_piechart(dict_lit_types)
     dict_pub_type=count_references_by_publication_type(references)

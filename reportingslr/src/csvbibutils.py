@@ -73,7 +73,7 @@ def mark_as_duplicated(references, id):
         logging.info(id+ref_tuple['Status/Selection']+str(res))
     return res
 
-def count_references_by_type_of_literature(references):
+def count_references_by_literature_type(references):
     types=[  literature_type(ref_tuple) for ref_tuple in references.values()]
     return Counter(types)
     

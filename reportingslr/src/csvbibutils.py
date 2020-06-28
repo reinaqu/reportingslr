@@ -11,7 +11,7 @@ import logging
 from graphicsutils import *
 
 ID_PAPER ="ID Paper"
-TITLE = "Title"
+TITLE ="Title"
 TYPE = "Type"
 GREY_LITERATURE=["blog", "wiki page", "website", "github page", "white paper"]
 WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book chapter","report","arxiv", "master thesis", "phd thesis"]
@@ -77,7 +77,17 @@ def count_references_by_type_of_literature(references):
     types=[  literature_type(ref_tuple) for ref_tuple in references.values()]
     return Counter(types)
     
+
+def count_references_by_publication_type(references, filter=None):
+    if (filter == None):
+        types=[normalize(ref_tuple[TYPE]) for ref_tuple in references.values()]
+    else:
+        types=[normalize(ref_tuple[TYPE]) for ref_tuple in references.values() if filter(ref_tuple)]
+    return Counter(types)
     
+
+def normalize(s):
+    return s.strip().lower().capitalize()
 
 def literature_type(ref_tuple):
     type = ref_tuple[TYPE].strip().lower()
@@ -96,12 +106,3 @@ def is_white_literature(ref_tuple):
 def is_grey_literature(ref_tuple):
     type = ref_tuple[TYPE].strip().lower()
     return type in GREY_LITERATURE
-
-    
-
-if __name__ == "__main__":
-    references=load_report_csv("../data/report.0.0.92-utf8.csv")
-    #print_report_items(references)
-    dict_types= count_references_by_type_of_literature(references)
-    print(dict_types)
-    create_piechart(dict_types)

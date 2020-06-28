@@ -19,11 +19,11 @@ WHITE_LITERATURE_LABEL = "White literature"
 GREY_LITERATURE_LABEL = "Grey literature"
 UNKNOWN_LABEL = "Unknown"
 
-def load_report_csv(filename):
+def load_report_csv(filename,encoding='utf-8'):
     ''' Read the csv springer file and returns a dictionary with the ID_PAPER as key and
         a DicReader entry as values 
     '''
-    with open(filename) as f:
+    with open(filename,encoding) as f:
         lector = csv.DictReader(f,delimiter=';')
         return {record[ID_PAPER]:record for record in lector}
 

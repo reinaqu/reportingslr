@@ -14,7 +14,10 @@ from dataframes_sc import create_dataframe_languages_by_blokchain_platform,\
     create_dataframe_languages_by_kind_and_type
 
 if __name__ == "__main__":
-#     studies=load_report_csv("../data/report.0.0.92-utf8.csv",ID_PAPER)
+    studies=load_report_csv("../data/report.0.0.92-utf8.csv",ID_PAPER)
+    languages=load_report_csv("../data/languages_per_bc_platform.csv",ID_LANG)
+    languages_clas=load_report_csv("../data/languages_classification.csv",'ID Language')
+     
 #     #print_report_items(studies)
 #     df= create_dataframe_studies_by_literature_type(studies)
 #     print(df)
@@ -42,31 +45,30 @@ if __name__ == "__main__":
 #     dict_pub_year_gl = count_studies_by_year(studies,lambda s:is_grey_literature(s))
 #     print(dict_pub_year_gl)
 #     
-#     df = create_dataframe_studies_by_year(studies)
-#     col_names=['white literature','grey literature']
-#     colours =['orange','grey']
-#     markers =[MARKER_SQUARE,MARKER_CIRCLE]
-#     create_line_plot_multiple_colums(df,'year', col_names, colours ,markers)
-#     
+    df = create_dataframe_studies_by_year(studies)
+    col_names=['white literature','grey literature']
+    colours =['orange','grey']
+    markers =[MARKER_SQUARE,MARKER_CIRCLE]
+    print(df)
+    create_line_plot_multiple_colums(df,'year', col_names, colours ,markers)
+     
     
-#     languages=load_report_csv("../data/languages_per_bc_platform.csv",ID_LANG)
-#     
+     
+     
 #     df = create_dataframe_languages_by_blokchain_platform(languages)
 #     print(df)
 #     create_bar(df, BLOCKCHAIN)
 #     print(languages)
-    
-    languages=load_report_csv("../data/languages_classification.csv",'ID Language')
-    
-    df=create_dataframe_languages_by_context_and_kind(languages)
+   
+    df=create_dataframe_languages_by_context_and_kind(languages_clas)
     create_stacked_bar(df,'kind of language','number of languages')
     print(df)
    
-    df=create_dataframe_languages_by_context_and_type(languages)
+    df=create_dataframe_languages_by_context_and_type(languages_clas)
     create_stacked_bar(df,'type of language','number of languages')
     print(df)
    
-    df=create_dataframe_languages_by_kind_and_type(languages)
+    df=create_dataframe_languages_by_kind_and_type(languages_clas)
     create_stacked_bar(df,'type of language','number of languages')
     print(df)
    

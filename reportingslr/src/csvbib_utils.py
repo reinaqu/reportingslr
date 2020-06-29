@@ -40,63 +40,63 @@ def print_items(report_items):
     for item in report_items:
         print(item)        
         
-def group_by_title(references):       
+def group_by_title(studies):       
     dicres = defaultdict(list)
-    #Group the references by title, the values are the paper ID's   
-    for ref in references.items():
+    #Group the studies by title, the values are the paper ID's   
+    for ref in studies.items():
         dkey= ref[1][TITLE].lower()
         dicres[dkey].append(ref[0])
     return dicres    
 
-def filter_duplicates(references):       
-    dic = group_by_title(references)
+def filter_duplicates(studies):       
+    dic = group_by_title(studies)
     #Filter duplicates. Duplicates are those ones that have more than one element in the values list
     dicres = defaultdict(list)
     for item in dic.items():
-        if(is_duplicated(references, item[1])):
+        if(is_duplicated(studies, item[1])):
             dkey= item[0]
             dicres[dkey].append(item[1])
     return sorted(dicres.items())
     
-def is_duplicated(references, list_ids):
+def is_duplicated(studies, list_ids):
     res = False
-    if len(list_ids)>1 and at_least_one_not_mark_as_duplicated(references, list_ids):
+    if len(list_ids)>1 and at_least_one_not_mark_as_duplicated(studies, list_ids):
         res=True
     return res
 
-def at_least_one_not_mark_as_duplicated(references,list_ids):
-    return any( not mark_as_duplicated(references, id) for id in list_ids)
+def at_least_one_not_mark_as_duplicated(studies,list_ids):
+    return any( not mark_as_duplicated(studies, id) for id in list_ids)
 
-def mark_as_duplicated(references, id):
-    ref_tuple =references.get(id)
+def mark_as_duplicated(studies, id):
+    ref_tuple =studies.get(id)
     res= ref_tuple['Status/Selection']=='DUPLICATED'
     if res==False:
         logging.info(id+ref_tuple['Status/Selection']+str(res))
     return res
 
-def count_references_by_literature_type(references, filter=None):
-    return count_references_by_property(references, lambda r:literature_type(r), filter)
+def count_studies_by_literature_type(studies, filter=None):
+    return count_studies_by_property(studies, lambda s:literature_type(s), filter)
     
 
-def count_references_by_publication_type(references, filter=None):
-    return count_references_by_property(references, lambda r:normalize(r[TYPE]), filter)
+def count_studies_by_publication_type(studies, filter=None):
+    return count_studies_by_property(studies, lambda s:normalize(s[TYPE]), filter)
     
-def count_references_by_year(references, filter=None):
-    c= count_references_by_property(references, lambda r:r[YEAR], filter)
+def count_studies_by_year(studies, filter=None):
+    c= count_studies_by_property(studies, lambda s:s[YEAR], filter)
     return OrderedDict(sorted(c.items()))
 
-def count_references_by_property(references, property, filter=None):
+def count_studies_by_property(studies, property, filter=None):
     if (filter == None):
-        types=[property(ref_tuple) for ref_tuple in references.values()]
+        types=[property(study_tuple) for study_tuple in studies.values()]
     else:
-        types=[property(ref_tuple) for ref_tuple in references.values() if filter(ref_tuple)]
+        types=[property(study_tuple) for study_tuple in studies.values() if filter(study_tuple)]
     return Counter(types)
 
 def normalize(s):
     return s.strip().lower().capitalize()
 
-def literature_type(ref_tuple):
-    type = ref_tuple[TYPE].strip().lower()
+def literature_type(study_tuple):
+    type = study_tuple[TYPE].strip().lower()
     if type in WHITE_LITERATURE:
         res=WHITE_LITERATURE_LABEL
     elif type in GREY_LITERATURE:
@@ -105,10 +105,10 @@ def literature_type(ref_tuple):
         res=UNKNOWN_LABEL
     return res     
         
-def is_white_literature(ref_tuple):
-    type = ref_tuple[TYPE].strip().lower()
+def is_white_literature(study_tuple):
+    type = study_tuple[TYPE].strip().lower()
     return type in WHITE_LITERATURE
 
-def is_grey_literature(ref_tuple):
-    type = ref_tuple[TYPE].strip().lower()
+def is_grey_literature(study_tuple):
+    type = study_tuple[TYPE].strip().lower()
     return type in GREY_LITERATURE

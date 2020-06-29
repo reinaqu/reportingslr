@@ -12,18 +12,18 @@ import pandas as pd
 MARKER_SQUARE='s'
 MARKER_CIRCLE='o'
 
-def create_piechart(data_dict):
-    ''' Create a piechart from a dictionary with data   
-    INPUT: 
-       - data_dict: dict with values-> {str:int}
-    OUTPUT: 
-       - A piechart is shown
-    '''
-    labs,values = zip(*data_dict.items()) 
-   
-    plt.pie(values, labels=labs, autopct='%1.1f%%', startangle=140)
+
+def create_piechart(dataframe, y_name,legend=False):
     plt.axis('equal')
-    plt.show()    
+    ax = plt.gca()
+    plot = dataframe.plot.pie(y=y_name, figsize=(5, 5),ax=ax, autopct='%1.1f%%', legend=legend)
+    plt.show()     
+
+def create_piechart_subplots(dataframe,legend=False):
+    plt.axis('equal')
+    ax = plt.gca()
+    plot = dataframe.plot.pie(subplots=True, ax=ax, autopct='%1.1f%%',legend=legend) 
+    plt.show()     
     
 def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
     '''
@@ -39,4 +39,3 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
         dataframe.plot(kind='line',x=x_name, y=lines[i], color=colours[i],marker=markers[i], ax=ax)
         
     plt.show()
-    

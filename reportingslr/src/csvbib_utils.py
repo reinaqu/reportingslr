@@ -7,6 +7,7 @@ Created on 27 may. 2020
 import csv
 from csv import DictReader
 from collections import Counter, defaultdict
+from commons import *
 import logging
 from _collections import OrderedDict
 
@@ -19,14 +20,6 @@ WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book ch
 WHITE_LITERATURE_LABEL = "White literature"
 GREY_LITERATURE_LABEL = "Grey literature"
 UNKNOWN_LABEL = "Unknown"
-
-def load_report_csv(filename,enc='utf-8'):
-    ''' Read the csv springer file and returns a dictionary with the ID_PAPER as key and
-        a DicReader entry as values 
-    '''
-    with open(filename,encoding=enc) as f:
-        lector = csv.DictReader(f,delimiter=';')
-        return {record[ID_PAPER]:record for record in lector}
 
 
 
@@ -75,25 +68,16 @@ def mark_as_duplicated(studies, id):
     return res
 
 def count_studies_by_literature_type(studies, filter=None):
-    return count_studies_by_property(studies, lambda s:literature_type(s), filter)
+    return count_by_property(studies, lambda s:literature_type(s), filter)
     
 
 def count_studies_by_publication_type(studies, filter=None):
-    return count_studies_by_property(studies, lambda s:normalize(s[TYPE]), filter)
+    return count_by_property(studies, lambda s:normalize(s[TYPE]), filter)
     
 def count_studies_by_year(studies, filter=None):
-    c= count_studies_by_property(studies, lambda s:s[YEAR], filter)
+    c= count_by_property(studies, lambda s:s[YEAR], filter)
     return OrderedDict(sorted(c.items()))
 
-def count_studies_by_property(studies, property, filter=None):
-    if (filter == None):
-        types=[property(study_tuple) for study_tuple in studies.values()]
-    else:
-        types=[property(study_tuple) for study_tuple in studies.values() if filter(study_tuple)]
-    return Counter(types)
-
-def normalize(s):
-    return s.strip().lower().capitalize()
 
 def literature_type(study_tuple):
     type = study_tuple[TYPE].strip().lower()

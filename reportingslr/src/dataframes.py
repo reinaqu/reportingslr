@@ -3,6 +3,8 @@
 Created on 28 jun. 2020
 
 @author: reinaqu_2
+This module contains functions to create dataframes that are
+related to slrs or mapping studies in general
 '''
 import pandas as pd
 from csvbib_utils import *

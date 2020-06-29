@@ -8,7 +8,10 @@ from graphics_utils import *
 from dataframes import *
 from commons import *
 from sc_utils import *
-from dataframes_sc import create_dataframe_languages_by_blokchain_platform
+from dataframes_sc import create_dataframe_languages_by_blokchain_platform,\
+    create_dataframe_languages_by_context_and_kind,\
+    create_dataframe_languages_by_context_and_type,\
+    create_dataframe_languages_by_kind_and_type
 
 if __name__ == "__main__":
 #     studies=load_report_csv("../data/report.0.0.92-utf8.csv",ID_PAPER)
@@ -46,10 +49,25 @@ if __name__ == "__main__":
 #     create_line_plot_multiple_colums(df,'year', col_names, colours ,markers)
 #     
     
-    languages=load_report_csv("../data/languages_per_bc_platform.csv",ID_LANG)
+#     languages=load_report_csv("../data/languages_per_bc_platform.csv",ID_LANG)
+#     
+#     df = create_dataframe_languages_by_blokchain_platform(languages)
+#     print(df)
+#     create_bar(df, BLOCKCHAIN)
+#     print(languages)
     
-    df = create_dataframe_languages_by_blokchain_platform(languages)
+    languages=load_report_csv("../data/languages_classification.csv",'ID Language')
+    
+    df=create_dataframe_languages_by_context_and_kind(languages)
+    create_stacked_bar(df,'kind of language','number of languages')
     print(df)
-    create_bar(df, BLOCKCHAIN)
-    print(languages)
-    
+   
+    df=create_dataframe_languages_by_context_and_type(languages)
+    create_stacked_bar(df,'type of language','number of languages')
+    print(df)
+   
+    df=create_dataframe_languages_by_kind_and_type(languages)
+    create_stacked_bar(df,'type of language','number of languages')
+    print(df)
+   
+   

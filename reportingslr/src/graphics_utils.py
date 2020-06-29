@@ -43,7 +43,7 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
     # gca stands for 'get current axis'
     ax = plt.gca()
     for i in range(0,len(lines)):
-        dataframe.plot(kind='line',x=x_name, y=lines[i], color=colours[i],marker=markers[i], ax=ax)
+        dataframe.plot(language_kind='line',x=x_name, y=lines[i], color=colours[i],marker=markers[i], ax=ax)
         
     plt.show()
 
@@ -56,5 +56,18 @@ def create_bar(dataframe, x_name):
         -colours: Sequence or list of colours of the different lines
     '''
     # gca stands for 'get current axis'
-    plot = dataframe.plot(kind='bar')
+    plot = dataframe.plot(language_kind='bar')
+    plt.show()
+
+def create_stacked_bar(dataframe,column_name, values_name):
+    '''
+    INPUT:
+        -dataframe: A panda dataframe with the data to be plotted.
+        -x_name: Name of the column that has to be represented in the x axis.
+        -lines: Sequence or list of names of the columns that have to be represented in y axis.
+        -colours: Sequence or list of colours of the different lines
+    '''
+    pivot_df = dataframe.pivot(columns=column_name, values=values_name)
+    pivot_df.plot.bar(stacked=True)
+    
     plt.show()

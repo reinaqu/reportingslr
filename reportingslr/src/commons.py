@@ -24,5 +24,37 @@ def count_by_property(items, property, filter=None):
         types=[property(item_tuple) for item_tuple in items.values() if filter(item_tuple)]
     return Counter(types)
 
+
+def count_by_property_pairs(items, property1,property2, filter=None):
+    if (filter == None):
+        types=[(property1(item_tuple), property2(item_tuple)) for item_tuple in items.values()]
+    else:
+        types=[(property1(item_tuple), property2(item_tuple)) for item_tuple in items.values() if filter(item_tuple)]
+    return Counter(types)
+
+def unzip_pairs_dict(dict_pairs):
+    '''
+    INPUT:
+        dict_pairs:  (k1,k2):value  Dictionary whose keys are sequences of two elements.
+    OUTPUT:
+        - list1: list with all the k1 elements
+        - list2: list with all the k2 elements
+        - list3: list with all the value elements.
+    Example:
+        Input: {(k1,a1): v1, (k1,a2):v2, (k2,a1):v3, (k2,a2):,v4}
+        Output: 
+            list_1 = {k1,k1,k2,k2}
+            list_2 = {a1,a2,a1,a2}
+            list_3 = {v1,v2,v3,v4}
+    '''
+    list_1=[]
+    list_2 =[]
+    list_3 =[]
+    for item in dict_pairs.items():
+        list_1.append(item[0][0])
+        list_2.append(item[0][1])
+        list_3.append(item[1])
+    return list_1, list_2, list_3    
+
 def normalize(s):
     return s.strip().lower().capitalize()

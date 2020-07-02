@@ -18,7 +18,7 @@ if __name__ == "__main__":
     languages=load_report_csv("../data/languages_per_bc_platform.csv",ID_LANG)
     languages_clas=load_report_csv("../data/languages_classification.csv",'ID Language')
     studies_country = load_report_csv("../data/publicationsPerCountry.csv",'Paper ID')
-    
+    MAP_FILE='../data/countries.geojson'
     
      
 #     #print_report_items(studies)
@@ -77,6 +77,6 @@ if __name__ == "__main__":
    
     df= create_dataframe_studies_per_country(studies_country)
    
-    create_choropleth_map(df,'number of studies')
+    create_choropleth_map(df,'number of studies', MAP_FILE)
    
    

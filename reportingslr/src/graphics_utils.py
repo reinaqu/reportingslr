@@ -17,7 +17,7 @@ MARKER_SQUARE='s'
 MARKER_CIRCLE='o'
 COUNTRY_MAP = 'ADMIN' # for countries.geojson
 #COUNTRY_MAP = 'name' ==> for world_countries.json
-MAP_FILE='../data/countries.geojson'
+
 
 def create_piechart(dataframe, y_name,legend=False):
     '''
@@ -90,10 +90,10 @@ def dataframe_search_country(dataframe,country):
         print(res.index,'-->', res)
     return res
 
-def create_choropleth_map (dataframe, column_name):
+def create_choropleth_map (dataframe, column_name, geojson_mapfile):
 
     #read the map as a geodataframe
-    world_df = gpd.read_file(MAP_FILE)
+    world_df = gpd.read_file(geojson_mapfile)
    
     #To draw all the countries, a left -join is needed.
     #Note that when the country does not exist in dataframe, the column 'number of studies' has a NaN value

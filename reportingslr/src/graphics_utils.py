@@ -5,12 +5,8 @@ Created on 27 jun. 2020
 @author: reinaqu_2
 '''
 from matplotlib import pyplot as plt
-import pandas as pd
 import geopandas as gpd
-import shapefile
-import pycrs
 from dataframes import create_dataframe_studies_per_country
-from json.decoder import NaN
 import numpy as np
 
 MARKER_SQUARE='s'

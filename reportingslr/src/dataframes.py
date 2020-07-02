@@ -68,3 +68,14 @@ def create_dataframe_studies_by_year(studies):
         'grey literature':gl_count,
         'total': l_count}
     return pd.DataFrame(data=d)
+
+def create_dataframe_studies_per_country(studies):
+    dict = count_studies_by_country(studies)
+
+    countries, studies_count = zip(*dict.items())
+    d ={'countries': countries,
+        'number of studies': studies_count}
+    return pd.DataFrame(data=d)
+
+
+    

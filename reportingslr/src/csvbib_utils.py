@@ -20,8 +20,8 @@ WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book ch
 WHITE_LITERATURE_LABEL = "White literature"
 GREY_LITERATURE_LABEL = "Grey literature"
 UNKNOWN_LABEL = "Unknown"
-
-
+ISO_CODE='ISO-alpha3 code'
+COUNTRY='Zone'
 
 def print_report_items(report_items):
     print("Number of items...", len(report_items))
@@ -96,3 +96,18 @@ def is_white_literature(study_tuple):
 def is_grey_literature(study_tuple):
     type = study_tuple[TYPE].strip().lower()
     return type in GREY_LITERATURE
+
+def count_studies_by_country(studies, filter=None):
+    '''
+    INPUT: 
+        -studies : {Paper ID,{Paper Id: id, Zone: country_name}==>{str,OrderedDict}
+    '''
+    return count_by_property(studies, lambda s:country(s), filter)
+
+def country(study_dict):
+    '''
+        INPUT
+         study_dict: OrderedDict(('Paper ID':id), ('Zone', Country_name)
+    '''
+    return study_dict[COUNTRY].strip()
+    

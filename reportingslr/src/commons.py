@@ -14,7 +14,7 @@ def load_report_csv(filename,id_name,enc='utf-8'):
     '''
     with open(filename,encoding=enc) as f:
         lector = csv.DictReader(f,delimiter=';')
-        return {record[id_name]:record for record in lector}
+        return {record[id_name].strip():record for record in lector}
 
 
 def count_by_property(items, property, filter=None):

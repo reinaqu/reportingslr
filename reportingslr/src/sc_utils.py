@@ -21,6 +21,8 @@ INDUSTRY_LABEL="Industry"
 STANDALONE_LABEL="Standalone"
 EXTENSION_LABEL="Extension"
 
+ID_PAPER ="ID Paper"
+
 def count_languages_by_blockchain(languages, filter=None):
     return count_by_property(languages, lambda l:l[BLOCKCHAIN], filter)
 
@@ -53,3 +55,75 @@ def language_type(language):
     elif language[EXTENSION_TYPE]=='N' and  language[STANDALONE_TYPE]=='Y':
         res=STANDALONE_LABEL
     return res
+
+
+
+
+
+
+def information_quality(study):
+    qa1 = has_language_name(study)
+    qa2 = has_paradigm(study)
+    qa3 = has_blockchain(study)
+    qa4 = has_dsl_type(study)
+    qa5 = has_focus(study)
+    qa6 = has_institution(study)
+    qa7 = has_institution_origin(study)
+    qa8 = has_benefits(study)
+    qa9 = has_challenges(study)
+    qa10 = has_use_cases(study)
+    qa11 = has_language_kind(study)
+    return qa1+qa2+qa3+qa4+qa5+qa6+qa7+qa8+qa9+qa10+qa11
+
+def has_language_name(study):
+    LANGUAGE_NAME="name"
+    return 0 if study[LANGUAGE_NAME].empty else 1
+
+def has_paradigm(study):
+    UNDETERMINED_PARADIGM="Paradigm : Undetermined}"
+    return 0 if study[UNDETERMINED_PARADIGM]=='Y' else 1
+
+def has_blockchain(study):
+    SUPPORTED_BY_BLOCKCHAIN='Supported by blockchain platform : Yes'
+    BLOCKCHAIN_NAME="Blockchain name"
+    return 0 if study[SUPPORTED_BY_BLOCKCHAIN]=='Y' and study[BLOCKCHAIN_NAME].empty else 1
+
+def has_dsl_type(study):
+    STANDALONE='DSL Type : Standalone'
+    EXTENSION='DSL Type : Extension}'
+    return 0 if study[STANDALONE]=='N' and study[EXTENSION]== 'N' else 1
+
+def has_focus(study):
+    FOCUS='Application Area'
+    return 0 if study[FOCUS].empty else 1
+
+def has_institution(study):
+    INSTITUTION='Institution name'
+    return 0 if study[INSTITUTION].empty else 1
+
+def has_institution_origin(study):
+    INSTITUTION='Institution name'
+    ACADEMIA = 'Insitution origin : Academia'
+    INDUSTRY = 'Insitution origin : Industry}'
+    return 0 if study[INSTITUTION].empty and (study[ACADEMIA]=='Y'or study[INDUSTRY]== 'Y') else 1
+
+def has_benefits(study):
+    BENEFITS='Benefits'
+    return 0 if study[BENEFITS].empty else 1
+
+def has_challenges(study):
+    CHALLENGES='Challenges'
+    return 0 if study[CHALLENGES].empty else 1
+ 
+def has_use_cases(study):
+    USE_CASES='Use cases'
+    return 0 if study[USE_CASES].empty else 1
+
+def has_language_kind(study):
+    IMPLEMENTATION='Kind : Implementation'
+    SPECIFICATION='Kind : Specification'
+    UNKNOWN='Kind : Unknown}'
+
+    return 0 if study[IMPLEMENTATION]=='N' and study[SPECIFICATION]=='N' and study[UNKNOWN]=='N' or study[UNKNOWN]=='Y' else 1
+
+    

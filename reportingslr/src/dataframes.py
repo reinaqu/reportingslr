@@ -35,8 +35,9 @@ def create_dataframe_studies_by_type(studies,filter=None):
            * number of studies: number of studies per literature type
     '''
     dict=count_studies_by_publication_type(studies,filter)
+    sorted_items =sorted(dict.items(),key=lambda it:it[1], reverse=True)
         
-    types, studies_count = zip(*dict.items())
+    types, studies_count = zip(*sorted_items)
     d ={'number of studies': studies_count}
     return pd.DataFrame(data=d, index=types)
 
@@ -77,5 +78,15 @@ def create_dataframe_studies_per_country(studies):
         'number of studies': studies_count}
     return pd.DataFrame(data=d)
 
+
+def create_dataframe_studies_quality(studies, filter=None):
+    dict_qualities = calculate_studies_quality(studies, filter)
+    
+    studies_ids = dict_qualities.keys()
+    studies_information_quality,studies_publication_quality = zip(*dict_qualities.values())
+          
+    d ={'information quality':studies_information_quality,
+        'publication quality': studies_publication_quality}
+    return pd.DataFrame(data=d, index=studies_ids)
 
     

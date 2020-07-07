@@ -8,6 +8,7 @@ from matplotlib import pyplot as plt
 import geopandas as gpd
 from dataframes import create_dataframe_studies_per_country
 import numpy as np
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 MARKER_SQUARE='s'
 MARKER_CIRCLE='o'
@@ -15,7 +16,7 @@ COUNTRY_MAP = 'ADMIN' # for countries.geojson
 #COUNTRY_MAP = 'name' ==> for world_countries.json
 
 
-def create_piechart(dataframe, y_name,legend=False):
+def create_piechart(dataframe, y_name,legend=False, y_axis_label=True):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -25,16 +26,20 @@ def create_piechart(dataframe, y_name,legend=False):
     '''
     plt.axis('equal')
     ax = plt.gca()
-    plot = dataframe.plot.pie(y=y_name, figsize=(5, 5),ax=ax, autopct='%1.1f%%', legend=legend)
-    plt.show()     
+        
+    plot = dataframe.plot.pie(y=y_name, figsize=(5, 5),ax=ax,  pctdistance=0.8, labeldistance=1.1, autopct='%1.1f%%', legend=legend)
+    if y_axis_label==False:
+        ax.set_ylabel('')
+    plt.show()
 
 def create_piechart_subplots(dataframe,legend=False):
     plt.axis('equal')
     ax = plt.gca()
     plot = dataframe.plot.pie(subplots=True, ax=ax, autopct='%1.1f%%',legend=legend) 
     plt.show()     
+
     
-def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
+def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers,fileoutput=None):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -46,10 +51,11 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
     ax = plt.gca()
     for i in range(0,len(lines)):
         dataframe.plot(kind='line',x=x_name, y=lines[i], color=colours[i],marker=markers[i], ax=ax)
-        
+    plt.grid()    
     plt.show()
 
-def create_bar(dataframe, x_name):
+
+def create_bar(dataframe, x_name,fileoutput=None):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -61,7 +67,9 @@ def create_bar(dataframe, x_name):
     plot = dataframe.plot(kind='bar')
     plt.show()
 
-def create_stacked_bar(dataframe,column_name, values_name):
+    
+
+def create_stacked_bar(dataframe,column_name, values_name,fileoutput=None):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -73,6 +81,7 @@ def create_stacked_bar(dataframe,column_name, values_name):
     pivot_df.plot.bar(stacked=True)
     
     plt.show()
+
     
 def dataframe_search_country(dataframe,country):
     #res = dataframe['number of studies'].where(dataframe['countries'] == country,0)
@@ -86,7 +95,7 @@ def dataframe_search_country(dataframe,country):
         print(res.index,'-->', res)
     return res
 
-def create_choropleth_map (dataframe, column_name, geojson_mapfile):
+def create_choropleth_map (dataframe, column_name, geojson_mapfile,fileoutput=None):
 
     #read the map as a geodataframe
     world_df = gpd.read_file(geojson_mapfile)
@@ -101,7 +110,7 @@ def create_choropleth_map (dataframe, column_name, geojson_mapfile):
     vmin, vmax=0, max(dataframe[column_name])
     
     # create figure and axes for Matplotlib
-    fig, ax = plt.subplots(1, figsize=(30, 10))
+    fig, ax = plt.subplots(1, figsize=(20, 50))
     #remove axes
     ax.set_axis_off()
     
@@ -110,8 +119,16 @@ def create_choropleth_map (dataframe, column_name, geojson_mapfile):
                                norm=plt.Normalize(vmin=vmin, vmax=vmax))
     # empty array for the data range
     sm._A = []
+    
+    
+    axins1 = inset_axes(ax,
+                    width="2%",  # width = 50% of parent_bbox width
+                    height="50%",  # height : 5%
+                    loc='lower right'
+                    )
+    
     # add the colorbar to the figure
-    cbar = fig.colorbar(sm)
+    cbar = fig.colorbar(sm, cax=axins1)
  
  
     # create map

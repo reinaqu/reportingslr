@@ -53,3 +53,5 @@ def create_dataframe_languages_by_kind_and_type(languages):
     d ={'type of language':languages_type,
         'number of languages': languages_count}
     return pd.DataFrame(data=d, index=languages_kind)
+
+

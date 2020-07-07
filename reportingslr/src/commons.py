@@ -7,6 +7,7 @@ Created on 29 jun. 2020
 import csv
 from csv import DictReader
 from collections import Counter, defaultdict
+from _collections import OrderedDict
 
 def load_report_csv(filename,id_name,enc='utf-8'):
     ''' Read the csv springer file and returns a dictionary with the ID_PAPER as key and
@@ -31,6 +32,13 @@ def count_by_property_pairs(items, property1,property2, filter=None):
     else:
         types=[(property1(item_tuple), property2(item_tuple)) for item_tuple in items.values() if filter(item_tuple)]
     return Counter(types)
+
+def create_dict(items, function_key, function_value, filter=None):
+    if (filter == None):
+        dict= { function_key(item_tuple): function_value(item_tuple) for item_tuple in items.values()}
+    else:
+        dict={ function_key(item_tuple): function_value(item_tuple) for item_tuple in items.values() if filter(item_tuple)}
+    return OrderedDict(dict)
 
 def unzip_pairs_dict(dict_pairs):
     '''

@@ -10,18 +10,22 @@ from collections import Counter, defaultdict
 from commons import *
 import logging
 from _collections import OrderedDict
+from sc_utils import information_quality
 
 ID_PAPER ="ID Paper"
 TITLE ="Title"
 TYPE = "Type"
 YEAR = "Year"
-GREY_LITERATURE=["blog", "wiki page", "website", "github page", "white paper"]
-WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book chapter","report","arxiv", "master thesis", "phd thesis"]
+GREY_LITERATURE=["blog", "wiki page", "website", "github", "white paper"]
+WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book chapter","report","arxiv", "master thesis", "phd thesis", "demo paper"]
 WHITE_LITERATURE_LABEL = "White literature"
 GREY_LITERATURE_LABEL = "Grey literature"
 UNKNOWN_LABEL = "Unknown"
 ISO_CODE='ISO-alpha3 code'
 COUNTRY='Zone'
+QUALITY_FACTOR='Quality Factor'
+WEIGHT='Weight'
+JOURNAL = 'Journal'
 
 def print_report_items(report_items):
     print("Number of items...", len(report_items))
@@ -87,6 +91,7 @@ def literature_type(study_tuple):
         res=GREY_LITERATURE_LABEL
     else:
         res=UNKNOWN_LABEL
+        print(study_tuple)
     return res     
         
 def is_white_literature(study_tuple):
@@ -110,4 +115,44 @@ def country(study_dict):
          study_dict: OrderedDict(('Paper ID':id), ('Zone', Country_name)
     '''
     return study_dict[COUNTRY].strip()
-    
+
+def count_studies_by_venue(studies):
+    '''
+    INPUT: 
+        -studies : {Paper ID,{Paper Id: id, Zone: country_name}==>{str,OrderedDict}
+    '''
+    return count_by_property(studies, lambda s:venue(s), lambda s:is_type_with_venue(s))
+
+def is_type_with_venue(study):
+    types_with_venues=("journal paper", "conference paper", "workshop paper","arxiv")
+    return study[TYPE].strip().lower() in types_with_venues
+
+def venue(study):
+    '''
+        INPUT
+         study: OrderedDict(('Paper ID':id), ('Zone', Country_name)
+    '''
+    type = study[TYPE].strip()
+    venue = study[JOURNAL].strip()
+    return (venue, type)
+
+def calculate_studies_quality(studies, filter=None):
+    return  create_dict(studies, lambda s: id(s), lambda s:quality(s), filter)
+
+def id(study_tuple):
+    '''
+        INPUT
+         study_tuple: OrderedDict(('Paper ID':id), ...)
+    '''
+    return study_tuple[ID_PAPER].strip()
+
+def quality(study):
+    '''
+        INPUT
+         study: OrderedDict(('Paper ID':id), ...)
+    '''
+    return (information_quality(study), publication_quality(study))
+
+def publication_quality(study):
+    return study[QUALITY_FACTOR] * study[WEIGHT]
+

@@ -6,7 +6,7 @@ Created on 27 jun. 2020
 '''
 from matplotlib import pyplot as plt
 import geopandas as gpd
-from dataframes import create_dataframe_studies_per_country
+from dataframes import create_dataframe_studies_by_country
 import numpy as np
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
@@ -70,7 +70,7 @@ def create_bar(dataframe, x_name, x_labels_rotation=90):
 
     
 
-def create_stacked_bar(dataframe,column_name, values_name,fileoutput=None):
+def create_stacked_bar(dataframe,column_name, values_name):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -79,24 +79,30 @@ def create_stacked_bar(dataframe,column_name, values_name,fileoutput=None):
         -colours: Sequence or list of colours of the different lines
     '''
     pivot_df = dataframe.pivot(columns=column_name, values=values_name)
-    pivot_df.plot.bar(stacked=True)
-    
+ 
+
+    ax=pivot_df.plot.bar(stacked=True)
+    #to draw the labels we have to iterate over the bar rectangles.
+    for rec in ax.patches:
+        x= rec.get_x() + rec.get_width() / 2
+        y =  rec.get_y()+ rec.get_height()/2
+        label= str(int(rec.get_height()))
+        ax.text(x, y,label, ha = 'center', va='center') 
+          
     plt.show()
 
-    
+
 def dataframe_search_country(dataframe,country):
     #res = dataframe['number of studies'].where(dataframe['countries'] == country,0)
-    print(dataframe)
     res_df= dataframe.loc[dataframe['countries'] == country]
     if res_df.empty:
         res=0
     else:
         res= res_df['number of studies']
         res.index=[range(0,len(res))] 
-        print(res.index,'-->', res)
     return res
 
-def create_choropleth_map (dataframe, column_name, geojson_mapfile,fileoutput=None):
+def create_choropleth_map (dataframe, column_name, geojson_mapfile):
 
     #read the map as a geodataframe
     world_df = gpd.read_file(geojson_mapfile)

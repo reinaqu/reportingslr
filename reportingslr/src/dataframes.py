@@ -70,8 +70,8 @@ def create_dataframe_studies_by_year(studies):
         'total': l_count}
     return pd.DataFrame(data=d)
 
-def create_dataframe_studies_per_country(studies):
-    dict = count_studies_by_country(studies)
+def create_dataframe_studies_by_country(studies):
+    dict = count_studies_by_country(studies, lambda s:not is_country_null(s))
 
     countries, studies_count = zip(*dict.items())
     d ={'countries': countries,

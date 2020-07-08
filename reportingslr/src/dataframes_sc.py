@@ -19,7 +19,7 @@ def create_dataframe_languages_by_blokchain_platform(languages):
            * number of languages: number of languages per blockchain platform
     '''
 
-    dict_lang_bc= count_languages_by_blockchain(languages, lambda l:is_not_blockchain_null_or_na(l))
+    dict_lang_bc= count_languages_by_blockchain(languages, lambda l:not is_blockchain_null(l) and not is_blockchain_na(l))
 
     ordered =sorted(dict_lang_bc.items(),key=lambda it:it[1], reverse=True)
     bc_platforms, languages_count = zip(*ordered)
@@ -28,6 +28,7 @@ def create_dataframe_languages_by_blokchain_platform(languages):
 
 
 def create_dataframe_languages_by_context_and_kind(languages):
+    
     dict_pairs = count_languages_by_context_and_kind(languages)
     
     bc_academia,languages_kind,languages_count = unzip_pairs_dict(dict_pairs)

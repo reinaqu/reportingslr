@@ -6,23 +6,26 @@ Created on 29 jun. 2020
 '''
 from commons import *
 
+
 BLOCKCHAIN ="Blockchain name"
 ID_LANG ="Language (ids studies)"
-IMPLEMENTATION_KIND= "Kind:Implementation"
-SPECIFICATION_KIND= "Kind:Specification"
-ACADEMIA_CONTEXT="Academia"
-INDUSTRY_CONTEXT="Industry"
-STANDALONE_TYPE ="DSL Type:Standalone"
-EXTENSION_TYPE="DSL Type:Extension"
+IMPLEMENTATION_KIND= "Kind : Implementation"
+SPECIFICATION_KIND= "Kind : Specification"
+ACADEMIA_CONTEXT="Insitution origin : Academia"
+INDUSTRY_CONTEXT="Insitution origin : Industry}"
+STANDALONE_TYPE ="DSL Type : Standalone"
+EXTENSION_TYPE="DSL Type : Extension}"
 IMPLEMENTATION_LABEL="Implementation"
 SPECIFICATION_LABEL="Specification"
 ACADEMIA_LABEL="Academia"
 INDUSTRY_LABEL="Industry" 
 STANDALONE_LABEL="Standalone"
 EXTENSION_LABEL="Extension"
+UNKNOWN_LABEL="Unknown"
 
 ID_PAPER ="ID Paper"
 LANGUAGE_NAME= "Name"
+ID_SLR="ID SLR"
 def count_languages_by_blockchain(languages_list, filter=None):
     '''
     INPUT:
@@ -38,21 +41,37 @@ def count_languages_by_blockchain(languages_list, filter=None):
     else:
         res= {blockchain:len(lang_list) for blockchain, lang_list in dict.items() if filter(blockchain)}
     return res
+
+def group_languages_names_by_blockchain(languages_list, filter=None):
+    dict = group_languages_by_blockchain(languages_list)
+    if filter==None:
+        res= {blockchain:languages_names(lang_list) for blockchain, lang_list in dict.items()}
+    else:
+        res= {blockchain:languages_names(lang_list) for blockchain, lang_list in dict.items() if filter(blockchain)}
+        
+    return sorted(res.items(), key=lambda it:len(it[1]), reverse=True)
+
+def languages_names(studies_list):
+    return sorted(set(studies_list))
     
-def is_not_blockchain_null_or_na(blockchain):
-    return blockchain != 'null' and blockchain != 'n/a' 
-   
+def is_blockchain_null(blockchain):
+    return blockchain == 'null'
+
+def is_blockchain_na(blockchain):
+    return blockchain == 'n/a' 
+
 def group_languages_by_blockchain(languages):
     '''
     INPUT:
         - languages: Dict(language: [Dict{id_paper:DictReaderEntry(reference)}])
-    OUTPUT:Dict(language: {Blockchain}}
+    OUTPUT:
+        - Dict(language: {Blockchain}}
     '''
     dicc=defaultdict(list)
     for language, list_studies in languages.items():
         conj = blockchains(list_studies)
-        for elem in conj:
-            dicc[elem].append(language)
+        for blockchain in conj:
+            dicc[blockchain].append(language)
     return dicc
     
 def blockchains(list_studies):
@@ -64,7 +83,12 @@ def blockchains(list_studies):
     return con
 
 def count_languages_by_context_and_kind(languages, filter=None):
-    return count_by_property_pairs(languages, lambda l:language_context(l), lambda l:language_kind(l),  filter)
+    '''
+    INPUT: Dict(language:[OrderedDict(...)]
+    '''
+    print(languages.values())
+    dict ={language: studies[0] for language, studies in languages.items()}
+    return count_by_property_pairs(dict, lambda s:language_context(s), lambda s:language_kind(s),  filter)
 
 def count_languages_by_kind_and_type(languages, filter=None):
     return count_by_property_pairs(languages, lambda l:language_kind(l), lambda l:language_type(l),  filter)
@@ -72,17 +96,20 @@ def count_languages_by_kind_and_type(languages, filter=None):
 def count_languages_by_context_and_type(languages, filter=None):
     return count_by_property_pairs(languages, lambda l:language_context(l), lambda l:language_type(l),  filter)
 
-def language_kind (language):
-    if language[IMPLEMENTATION_KIND]=='Y' and  language[SPECIFICATION_KIND]=='N':
+def language_kind (study):
+    print(study)
+    print(study[IMPLEMENTATION_KIND], study[SPECIFICATION_KIND])
+    res=UNKNOWN_LABEL
+    if study[IMPLEMENTATION_KIND]=='Y' and  study[SPECIFICATION_KIND]=='N':
         res=IMPLEMENTATION_LABEL
-    elif language[IMPLEMENTATION_KIND]=='N' and  language[SPECIFICATION_KIND]=='Y':
+    elif study[IMPLEMENTATION_KIND]=='N' and  study[SPECIFICATION_KIND]=='Y':
         res=SPECIFICATION_LABEL
     return res
 
-def language_context (language):
-    if language[ACADEMIA_CONTEXT]=='Y' and  language[INDUSTRY_CONTEXT]=='N':
+def language_context (study):
+    if study[ACADEMIA_CONTEXT]=='Y' and  study[INDUSTRY_CONTEXT]=='N':
         res=ACADEMIA_LABEL
-    elif language[ACADEMIA_CONTEXT]=='N' and  language[INDUSTRY_CONTEXT]=='Y':
+    elif study[ACADEMIA_CONTEXT]=='N' and  study[INDUSTRY_CONTEXT]=='Y':
         res=INDUSTRY_LABEL
     return res
 
@@ -101,7 +128,7 @@ def language(study_dict):
     
     lang_name=study_dict[LANGUAGE_NAME].strip()
     if lang_name=='null':
-        lang_name=study_dict[ID_PAPER].strip()
+        lang_name=study_dict[ID_SLR].strip()
     return lang_name    
 
 

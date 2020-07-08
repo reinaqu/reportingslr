@@ -13,16 +13,17 @@ from _collections import OrderedDict
 from sc_utils import information_quality
 
 ID_PAPER ="ID Paper"
+ID_SLR="ID SLR"
 TITLE ="Title"
 TYPE = "Type"
 YEAR = "Year"
-GREY_LITERATURE=["blog", "wiki page", "website", "github", "white paper"]
-WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book chapter","report","arxiv", "master thesis", "phd thesis", "demo paper"]
+GREY_LITERATURE=["blog", "wiki page", "website", "github", "white paper", "report"]
+WHITE_LITERATURE=["journal paper", "conference paper", "workshop paper","book chapter","arxiv", "master thesis", "phd thesis", "demo paper"]
 WHITE_LITERATURE_LABEL = "White literature"
 GREY_LITERATURE_LABEL = "Grey literature"
 UNKNOWN_LABEL = "Unknown"
 ISO_CODE='ISO-alpha3 code'
-COUNTRY='Zone'
+COUNTRY='Country'
 QUALITY_FACTOR='Quality Factor'
 WEIGHT='Weight'
 JOURNAL = 'Journal'
@@ -91,7 +92,7 @@ def literature_type(study_tuple):
         res=GREY_LITERATURE_LABEL
     else:
         res=UNKNOWN_LABEL
-        print(study_tuple)
+    print(study_tuple[ID_SLR],study_tuple[ID_PAPER], type)
     return res     
         
 def is_white_literature(study_tuple):
@@ -115,6 +116,9 @@ def country(study_dict):
          study_dict: OrderedDict(('Paper ID':id), ('Zone', Country_name)
     '''
     return study_dict[COUNTRY].strip()
+
+def is_country_null(study_dict):
+    return study_dict[COUNTRY].strip() == 'null'
 
 def count_studies_by_venue(studies):
     '''

@@ -26,7 +26,7 @@ ISO_CODE='ISO-alpha3 code'
 COUNTRY='Country'
 QUALITY_FACTOR='Quality Factor'
 WEIGHT='Weight'
-JOURNAL = 'Journal'
+VENUE = 'Venue'
 
 def print_report_items(report_items):
     print("Number of items...", len(report_items))
@@ -120,12 +120,12 @@ def country(study_dict):
 def is_country_null(study_dict):
     return study_dict[COUNTRY].strip() == 'null'
 
-def count_studies_by_venue(studies):
+def group_studies_by_venue(studies):
     '''
     INPUT: 
         -studies : {Paper ID,{Paper Id: id, Zone: country_name}==>{str,OrderedDict}
     '''
-    return count_by_property(studies, lambda s:venue(s), lambda s:is_type_with_venue(s))
+    return group_by_property(studies, lambda s:venue(s), lambda s:is_type_with_venue(s))
 
 def is_type_with_venue(study):
     types_with_venues=("journal paper", "conference paper", "workshop paper","arxiv")
@@ -136,9 +136,9 @@ def venue(study):
         INPUT
          study: OrderedDict(('Paper ID':id), ('Zone', Country_name)
     '''
-    type = study[TYPE].strip()
-    venue = study[JOURNAL].strip()
-    return (venue, type)
+    venue = study[VENUE].strip().split("#")[0]
+    res= (venue.strip().replace("\n"," "))
+    return res
 
 def calculate_studies_quality(studies, filter=None):
     return  create_dict(studies, lambda s: id(s), lambda s:quality(s), filter)

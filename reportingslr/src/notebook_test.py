@@ -64,25 +64,20 @@ if __name__ == "__main__":
 #     create_bar(df, BLOCKCHAIN)
 #     print(languages)
      
-    df=create_dataframe_languages_by_context_and_kind(languages)
-    create_stacked_bar(df,'kind of language','number of languages')
-    print(df)
-    
-    df=create_dataframe_languages_by_context_and_type(languages)
-    create_stacked_bar(df,'type of language','number of languages')
-    print(df)
-    
-    df=create_dataframe_languages_by_kind_and_type(languages)
-    create_stacked_bar(df,'type of language','number of languages')
-    print(df)
-   
+#     df=create_dataframe_languages_by_context_and_kind(languages)
+#     create_stacked_bar(df,'kind of language','number of languages')
+#     print(df)
+#     
+#     df=create_dataframe_languages_by_context_and_type(languages)
+#     create_stacked_bar(df,'type of language','number of languages')
+#     print(df)
+#     
+#     df=create_dataframe_languages_by_kind_and_type(languages)
+#     create_stacked_bar(df,'type of language','number of languages')
+#     print(df)
+#    
 #     df= create_dataframe_studies_by_country(studies)
 #     print(df) 
 #     create_choropleth_map(df,'number of studies', MAP_FILE)
-     
- 
-    dict=count_studies_by_venue(studies)
-    lista=sorted(dict.items(), key=lambda item:item[1], reverse=True)
-    for elem in lista:
-        print(elem)
-      
+         
+    generate_venues_ordered_by_num_studies(studies)  

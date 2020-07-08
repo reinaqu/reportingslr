@@ -86,19 +86,18 @@ def count_languages_by_context_and_kind(languages, filter=None):
     '''
     INPUT: Dict(language:[OrderedDict(...)]
     '''
-    print(languages.values())
     dict ={language: studies[0] for language, studies in languages.items()}
     return count_by_property_pairs(dict, lambda s:language_context(s), lambda s:language_kind(s),  filter)
 
 def count_languages_by_kind_and_type(languages, filter=None):
-    return count_by_property_pairs(languages, lambda l:language_kind(l), lambda l:language_type(l),  filter)
+    dict ={language: studies[0] for language, studies in languages.items()}
+    return count_by_property_pairs(dict, lambda l:language_kind(l), lambda l:language_type(l),  filter)
 
 def count_languages_by_context_and_type(languages, filter=None):
-    return count_by_property_pairs(languages, lambda l:language_context(l), lambda l:language_type(l),  filter)
+    dict ={language: studies[0] for language, studies in languages.items()}
+    return count_by_property_pairs(dict, lambda l:language_context(l), lambda l:language_type(l),  filter)
 
 def language_kind (study):
-    print(study)
-    print(study[IMPLEMENTATION_KIND], study[SPECIFICATION_KIND])
     res=UNKNOWN_LABEL
     if study[IMPLEMENTATION_KIND]=='Y' and  study[SPECIFICATION_KIND]=='N':
         res=IMPLEMENTATION_LABEL
@@ -107,6 +106,7 @@ def language_kind (study):
     return res
 
 def language_context (study):
+    res=UNKNOWN_LABEL
     if study[ACADEMIA_CONTEXT]=='Y' and  study[INDUSTRY_CONTEXT]=='N':
         res=ACADEMIA_LABEL
     elif study[ACADEMIA_CONTEXT]=='N' and  study[INDUSTRY_CONTEXT]=='Y':
@@ -114,6 +114,7 @@ def language_context (study):
     return res
 
 def language_type(language):
+    res=UNKNOWN_LABEL
     if language[EXTENSION_TYPE]=='Y' and  language[STANDALONE_TYPE]=='N':
         res=EXTENSION_LABEL
     elif language[EXTENSION_TYPE]=='N' and  language[STANDALONE_TYPE]=='Y':

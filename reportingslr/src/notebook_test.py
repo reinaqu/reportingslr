@@ -17,8 +17,6 @@ from dataframes_sc import create_dataframe_languages_by_blokchain_platform,\
 import locale
 if __name__ == "__main__":
     studies=load_report_csv("../data/report.0.0.97.csv",ID_PAPER, enc='cp1252')
- #   languages_clas=load_report_csv("../data/languages_classification.csv",'ID Language')
-    studies_country = load_report_csv("../data/publicationsPerCountry.csv",'Paper ID')
     MAP_FILE='../data/countries.geojson'
      
     #print_report_items(studies)
@@ -66,17 +64,17 @@ if __name__ == "__main__":
 #     create_bar(df, BLOCKCHAIN)
 #     print(languages)
      
-#     df=create_dataframe_languages_by_context_and_kind(languages)
-#     create_stacked_bar(df,'kind of language','number of languages')
-#     print(df)
+    df=create_dataframe_languages_by_context_and_kind(languages)
+    create_stacked_bar(df,'kind of language','number of languages')
+    print(df)
     
-#     df=create_dataframe_languages_by_context_and_type(languages_clas)
-#     create_stacked_bar(df,'type of language','number of languages')
-#     print(df)
-#    
-#     df=create_dataframe_languages_by_kind_and_type(languages_clas)
-#     create_stacked_bar(df,'type of language','number of languages')
-#     print(df)
+    df=create_dataframe_languages_by_context_and_type(languages)
+    create_stacked_bar(df,'type of language','number of languages')
+    print(df)
+    
+    df=create_dataframe_languages_by_kind_and_type(languages)
+    create_stacked_bar(df,'type of language','number of languages')
+    print(df)
    
 #     df= create_dataframe_studies_by_country(studies)
 #     print(df) 

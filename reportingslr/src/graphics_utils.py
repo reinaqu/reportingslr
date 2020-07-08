@@ -70,7 +70,7 @@ def create_bar(dataframe, x_name, x_labels_rotation=90):
 
     
 
-def create_stacked_bar(dataframe,column_name, values_name):
+def create_stacked_bar(dataframe,column_name, values_name,x_labels_rotation=0):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -88,7 +88,7 @@ def create_stacked_bar(dataframe,column_name, values_name):
         y =  rec.get_y()+ rec.get_height()/2
         label= str(int(rec.get_height()))
         ax.text(x, y,label, ha = 'center', va='center') 
-          
+    plt.xticks(rotation=x_labels_rotation)      
     plt.show()
 
 

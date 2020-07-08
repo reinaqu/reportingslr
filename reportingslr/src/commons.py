@@ -25,6 +25,12 @@ def count_by_property(items, property, filter=None):
         types=[property(item_tuple) for item_tuple in items.values() if filter(item_tuple)]
     return Counter(types)
 
+def group_by_property(items, property, filter=None):
+    dict=defaultdict(list)
+    for item_tuple in items.values():
+        if filter ==None or filter(item_tuple):
+            dict[property(item_tuple)].append(item_tuple)
+    return dict
 
 def count_by_property_pairs(items, property1,property2, filter=None):
     if (filter == None):

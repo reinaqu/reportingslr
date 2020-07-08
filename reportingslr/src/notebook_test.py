@@ -12,9 +12,9 @@ from dataframes_sc import create_dataframe_languages_by_blokchain_platform,\
     create_dataframe_languages_by_context_and_kind,\
     create_dataframe_languages_by_context_and_type,\
     create_dataframe_languages_by_kind_and_type
-
+import locale
 if __name__ == "__main__":
-    studies=load_report_csv("../data/report.0.0.96-utf8.csv",ID_PAPER)
+    studies=load_report_csv("../data/report.0.0.97.csv",ID_PAPER, enc='cp1252')
     languages=load_report_csv("../data/languages_per_bc_platform.csv",ID_LANG)
     languages_clas=load_report_csv("../data/languages_classification.csv",'ID Language')
     studies_country = load_report_csv("../data/publicationsPerCountry.csv",'Paper ID')
@@ -56,12 +56,14 @@ if __name__ == "__main__":
 #      
     
      
+    languages = studies_by_language(studies)
+    print(count_languages_by_blockchain(languages))
+  
+    df = create_dataframe_languages_by_blokchain_platform(languages)
+    print(df)
+    create_bar(df, BLOCKCHAIN)
+    print(languages)
      
-#     df = create_dataframe_languages_by_blokchain_platform(languages)
-#     print(df)
-#     create_bar(df, BLOCKCHAIN)
-#     print(languages)
-   
 #     df=create_dataframe_languages_by_context_and_kind(languages_clas)
 #     create_stacked_bar(df,'kind of language','number of languages')
 #     print(df)
@@ -75,10 +77,10 @@ if __name__ == "__main__":
 #     print(df)
    
     df= create_dataframe_studies_per_country(studies_country)
-    
+     
     create_choropleth_map(df,'number of studies', MAP_FILE)
-    
-
+     
+ 
     dict=count_studies_by_venue(studies)
     lista=sorted(dict.items(), key=lambda item:item[1], reverse=True)
     for elem in lista:

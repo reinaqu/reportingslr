@@ -6,7 +6,7 @@ Created on 29 jun. 2020
 '''
 from commons import *
 
-BLOCKCHAIN ="Blockchain platform"
+BLOCKCHAIN ="Blockchain name"
 ID_LANG ="Language (ids studies)"
 IMPLEMENTATION_KIND= "Kind:Implementation"
 SPECIFICATION_KIND= "Kind:Specification"
@@ -22,9 +22,46 @@ STANDALONE_LABEL="Standalone"
 EXTENSION_LABEL="Extension"
 
 ID_PAPER ="ID Paper"
-
-def count_languages_by_blockchain(languages, filter=None):
-    return count_by_property(languages, lambda l:l[BLOCKCHAIN], filter)
+LANGUAGE_NAME= "Name"
+def count_languages_by_blockchain(languages_list, filter=None):
+    '''
+    INPUT:
+        - languages_list: Dict(language: [Dict{id_paper:DictReaderEntry(reference)}])
+    OUTPUT:
+        - dataframe: panda.Dataframe with the following structure:
+           * index: blockain platform
+           * number of languages_list: number of languages_list per blockchain platform
+    '''
+    dict = group_languages_by_blockchain(languages_list)
+    if filter==None:
+        res= {blockchain:len(lang_list) for blockchain, lang_list in dict.items()}
+    else:
+        res= {blockchain:len(lang_list) for blockchain, lang_list in dict.items() if filter(blockchain)}
+    return res
+    
+def is_not_blockchain_null_or_na(blockchain):
+    return blockchain != 'null' and blockchain != 'n/a' 
+   
+def group_languages_by_blockchain(languages):
+    '''
+    INPUT:
+        - languages: Dict(language: [Dict{id_paper:DictReaderEntry(reference)}])
+    OUTPUT:Dict(language: {Blockchain}}
+    '''
+    dicc=defaultdict(list)
+    for language, list_studies in languages.items():
+        conj = blockchains(list_studies)
+        for elem in conj:
+            dicc[elem].append(language)
+    return dicc
+    
+def blockchains(list_studies):
+    con=set()
+    for study in list_studies:
+        lst= study[BLOCKCHAIN].split(',')
+        for it in lst:
+            con.add(it.strip())
+    return con
 
 def count_languages_by_context_and_kind(languages, filter=None):
     return count_by_property_pairs(languages, lambda l:language_context(l), lambda l:language_kind(l),  filter)
@@ -57,8 +94,15 @@ def language_type(language):
     return res
 
 
-
-
+def studies_by_language(studies):
+    return group_by_property(studies, lambda s:language(s))
+    
+def language(study_dict):
+    
+    lang_name=study_dict[LANGUAGE_NAME].strip()
+    if lang_name=='null':
+        lang_name=study_dict[ID_PAPER].strip()
+    return lang_name    
 
 
 def information_quality(study):

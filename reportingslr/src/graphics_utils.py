@@ -55,7 +55,7 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers,f
     plt.show()
 
 
-def create_bar(dataframe, x_name,fileoutput=None):
+def create_bar(dataframe, x_name, x_labels_rotation=90):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -65,6 +65,7 @@ def create_bar(dataframe, x_name,fileoutput=None):
     '''
     # gca stands for 'get current axis'
     plot = dataframe.plot(kind='bar')
+    plt.xticks(rotation=x_labels_rotation)
     plt.show()
 
     

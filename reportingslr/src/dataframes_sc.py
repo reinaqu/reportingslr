@@ -12,14 +12,14 @@ from sc_utils import *
 def create_dataframe_languages_by_blokchain_platform(languages):
     '''
     INPUT:
-        - studies: Dict{id_paper:DictReaderEntry(reference)}
+        - studies: Dict(language: [Dict{id_paper:DictReaderEntry(reference)}])
     OUTPUT:
         - dataframe: panda.Dataframe with the following structure:
            * index: blockain platform
            * number of languages: number of languages per blockchain platform
     '''
 
-    dict_lang_bc= count_languages_by_blockchain(languages)
+    dict_lang_bc= count_languages_by_blockchain(languages, lambda l:is_not_blockchain_null_or_na(l))
 
     ordered =sorted(dict_lang_bc.items(),key=lambda it:it[1], reverse=True)
     bc_platforms, languages_count = zip(*ordered)

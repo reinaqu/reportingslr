@@ -133,7 +133,7 @@ def language(study_dict):
     return lang_name    
 
 
-def information_quality(study):
+def completeness(study):
     qa1 = has_language_name(study)
     qa2 = has_paradigm(study)
     qa3 = has_blockchain(study)
@@ -141,15 +141,24 @@ def information_quality(study):
     qa5 = has_focus(study)
     qa6 = has_institution(study)
     qa7 = has_institution_origin(study)
-    qa8 = has_benefits(study)
-    qa9 = has_challenges(study)
-    qa10 = has_use_cases(study)
-    qa11 = has_language_kind(study)
-    return qa1+qa2+qa3+qa4+qa5+qa6+qa7+qa8+qa9+qa10+qa11
+    qa8 = has_challenges(study)
+    qa9= has_use_cases(study)
+    qa10 = has_language_kind(study)
+    return (qa1+qa2+qa3+qa4+qa5+qa6+qa7+qa8+qa9+qa10)/10
 
+def contextual_IQ(study):
+    c = completeness(study)
+    if c>0.5:
+        res='High'
+    elif c>0.2:
+        res='Medium'
+    else:
+        res='Low'
+    return (c, res)
+    
 def has_language_name(study):
-    LANGUAGE_NAME="name"
-    return 0 if study[LANGUAGE_NAME].empty else 1
+    LANGUAGE_NAME='Name'
+    return 0 if study[LANGUAGE_NAME]=='null' else 1
 
 def has_paradigm(study):
     UNDETERMINED_PARADIGM="Paradigm : Undetermined}"
@@ -158,7 +167,7 @@ def has_paradigm(study):
 def has_blockchain(study):
     SUPPORTED_BY_BLOCKCHAIN='Supported by blockchain platform : Yes'
     BLOCKCHAIN_NAME="Blockchain name"
-    return 0 if study[SUPPORTED_BY_BLOCKCHAIN]=='Y' and study[BLOCKCHAIN_NAME].empty else 1
+    return 0 if study[SUPPORTED_BY_BLOCKCHAIN]=='Y' and study[BLOCKCHAIN_NAME]=='null' else 1
 
 def has_dsl_type(study):
     STANDALONE='DSL Type : Standalone'
@@ -166,30 +175,27 @@ def has_dsl_type(study):
     return 0 if study[STANDALONE]=='N' and study[EXTENSION]== 'N' else 1
 
 def has_focus(study):
-    FOCUS='Application Area'
-    return 0 if study[FOCUS].empty else 1
+    FOCUS='Focus'
+    return 0 if study[FOCUS]=='null' else 1
 
 def has_institution(study):
     INSTITUTION='Institution name'
-    return 0 if study[INSTITUTION].empty else 1
+    return 0 if study[INSTITUTION]=='null' else 1
 
 def has_institution_origin(study):
     INSTITUTION='Institution name'
     ACADEMIA = 'Insitution origin : Academia'
     INDUSTRY = 'Insitution origin : Industry}'
-    return 0 if study[INSTITUTION].empty and (study[ACADEMIA]=='Y'or study[INDUSTRY]== 'Y') else 1
+    return 0 if study[INSTITUTION]=='null' and (study[ACADEMIA]=='Y' or study[INDUSTRY]== 'Y') else 1
 
-def has_benefits(study):
-    BENEFITS='Benefits'
-    return 0 if study[BENEFITS].empty else 1
 
 def has_challenges(study):
     CHALLENGES='Challenges'
-    return 0 if study[CHALLENGES].empty else 1
+    return 0 if study[CHALLENGES]=='null' else 1
  
 def has_use_cases(study):
     USE_CASES='Use cases'
-    return 0 if study[USE_CASES].empty else 1
+    return 0 if study[USE_CASES]=='null' else 1
 
 def has_language_kind(study):
     IMPLEMENTATION='Kind : Implementation'

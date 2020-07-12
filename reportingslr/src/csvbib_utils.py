@@ -10,7 +10,7 @@ from collections import Counter, defaultdict
 from commons import *
 import logging
 from _collections import OrderedDict
-from sc_utils import information_quality
+from sc_utils import contextual_IQ
 
 ID_PAPER ="ID Paper"
 ID_SLR="ID SLR"
@@ -140,8 +140,8 @@ def venue(study):
     res= (venue.strip().replace("\n"," "))
     return res
 
-def calculate_studies_quality(studies, filter=None):
-    return  create_dict(studies, lambda s: id(s), lambda s:quality(s), filter)
+def calculate_studies_contextualIQ(studies, filter=None):
+    return  create_dict(studies, lambda s: id(s), lambda s:contextual_IQ(s), filter)
 
 def id(study_tuple):
     '''
@@ -150,13 +150,7 @@ def id(study_tuple):
     '''
     return study_tuple[ID_PAPER].strip()
 
-def quality(study):
-    '''
-        INPUT
-         study: OrderedDict(('Paper ID':id), ...)
-    '''
-    return (information_quality(study), publication_quality(study))
 
-def publication_quality(study):
-    return study[QUALITY_FACTOR] * study[WEIGHT]
 
+def select_literature(studies, filter=None):
+    return group_by_property(studies, lambda s: id(s), filter=filter)

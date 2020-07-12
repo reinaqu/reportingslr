@@ -79,14 +79,49 @@ def create_dataframe_studies_by_country(studies):
     return pd.DataFrame(data=d)
 
 
-def create_dataframe_studies_quality(studies, filter=None):
-    dict_qualities = calculate_studies_quality(studies, filter)
-    
-    studies_ids = dict_qualities.keys()
-    studies_information_quality,studies_publication_quality = zip(*dict_qualities.values())
-          
-    d ={'information quality':studies_information_quality,
-        'publication quality': studies_publication_quality}
-    return pd.DataFrame(data=d, index=studies_ids)
 
+def create_dataframe_from_excel(excel_datafile, sheet_name, index_col):
+    df= pd.read_excel(excel_datafile,
+            sheet_name=sheet_name,
+            header=0,
+            na_values="-",
+            index_col=False,
+            keep_default_na=True
+            )
     
+    return df.set_index(index_col)
+  
+def create_dataframe_studies_contextualIQ(studies, filter=None):
+    dict_qualities = calculate_studies_contextualIQ(studies, filter)
+    studies_ids = dict_qualities.keys()
+    completeness,contextualIQ= zip(*dict_qualities.values())
+           
+    d ={'ContextualIQ': contextualIQ,
+        }
+    res= pd.DataFrame(data=d, index=studies_ids)
+    res.index.name=ID_PAPER
+    return res
+
+def create_dataframe_quality_facets(contextual_df,quality_df): 
+    
+    data = quality_df['IntrinsicIQ'].tolist()
+    print(data)
+    contextual_df.insert(0,'IntrinsicIQ', data,True)
+    return contextual_df
+    
+                        
+def create_dataframe_intrinsicIQ_count(quality_df):
+    #df= quality_df[[ID_PAPER,'IntrinsicIQ']].groupby(['IntrinsicIQ']).agg(name=('number of studies','count'))
+    df=quality_df.groupby(['IntrinsicIQ']).size().reset_index(name='number of studies')
+    return df
+
+def create_dataframe_contextualIQ_count(contextualIQ_df):
+    #df= quality_df[[ID_PAPER,'IntrinsicIQ']].groupby(['IntrinsicIQ']).agg(name=('number of studies','count'))
+    df=contextualIQ_df.groupby(['ContextualIQ']).size().reset_index(name='number of studies')
+    return df
+
+def create_dataframe_facets_count(facet_df):
+    #df= quality_df[[ID_PAPER,'IntrinsicIQ']].groupby(['IntrinsicIQ']).agg(name=('number of studies','count'))
+    df=facet_df.groupby(['IntrinsicIQ','ContextualIQ']).size().reset_index(name='number of studies')
+    
+    return df

@@ -9,6 +9,7 @@ import geopandas as gpd
 from dataframes import create_dataframe_studies_by_country
 import numpy as np
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from plotly import graph_objects as go
 
 MARKER_SQUARE='s'
 MARKER_CIRCLE='o'
@@ -39,7 +40,7 @@ def create_piechart_subplots(dataframe,legend=False):
     plt.show()     
 
     
-def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers,fileoutput=None):
+def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -51,6 +52,8 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers,f
     ax = plt.gca()
     for i in range(0,len(lines)):
         dataframe.plot(kind='line',x=x_name, y=lines[i], color=colours[i],marker=markers[i], ax=ax)
+        
+          
     plt.grid()    
     plt.show()
 
@@ -64,7 +67,7 @@ def create_bar(dataframe, x_name, x_labels_rotation=90):
         -colours: Sequence or list of colours of the different lines
     '''
     # gca stands for 'get current axis'
-    plot = dataframe.plot(kind='bar')
+    plot = dataframe.plot(kind='bar',x=x_name)
     plt.xticks(rotation=x_labels_rotation)
     plt.show()
 
@@ -152,3 +155,32 @@ def create_choropleth_map (dataframe, column_name, geojson_mapfile):
     #    if (row[column_name]>0):
     #        plt.annotate(s=str(int(row[column_name])), xy=row['coords'],horizontalalignment='center')
     plt.show()
+    
+def create_bubble(dataframe, rows, columns, count_name, x_name, y_name):
+    #create padding column from values for circles that are neither too small nor too large
+    df_aux= dataframe[count_name]
+    dataframe["padd"] = 2.5 * (df_aux - df_aux.min()) / (df_aux.max() - df_aux.min()) + 0.5
+    fig = plt.figure()
+    #prepare the axes for the plot - you can also order your categories at this step
+    s = plt.scatter(rows, columns, s = 0)
+    #s.remove
+    ax = plt.gca()
+    ax.set_xlabel(x_name)
+    ax.set_ylabel(y_name)
+    ax.set_xmargin(0.5)
+    ax.set_ymargin(0.5)
+   
+    
+    #plot data row-wise as text with circle radius according to Count
+    for row in dataframe.itertuples():
+        bbox_props = dict(boxstyle = "circle, pad = {}".format(row.padd), fc = "w", ec = "r", lw = 2)
+        plt.annotate(str(row[3]), xy = (row[1], row[2]), bbox = bbox_props, ha="center", va="center", zorder = 2, clip_on = False)
+    #plot grid behind markers
+    plt.grid(ls = "--", zorder = 1)
+    #take care of long labels
+    fig.autofmt_xdate()
+    plt.tight_layout()
+    plt.show()
+
+
+

@@ -5,7 +5,8 @@ Created on 29 jun. 2020
 @author: reinaqu_2
 '''
 from commons import *
-
+import numpy as np
+import pandas as pd
 
 BLOCKCHAIN ="Blockchain name"
 ID_LANG ="Language (ids studies)"
@@ -204,4 +205,88 @@ def has_language_kind(study):
 
     return 0 if study[IMPLEMENTATION]=='N' and study[SPECIFICATION]=='N' and study[UNKNOWN]=='N' or study[UNKNOWN]=='Y' else 1
 
+def count_use_cases (languages, df_usecases):
+    '''
+    INPUT: 
+        -studies : list o studies [OrderedDict(('Paper ID':id), ('Zone', Country_name)]
+        -df_usecases: dataframe with the following requirements:
+            * It should have as index the ID_PAPER
+            * It should have a column (named Clasificación) with the use cases
+            * The use cases of the study should have the format uc1/uc2/...
+              For example, Financial/Game/Notary/Others
+
+    OUTPUT: 
+        - {language:set(use cases)} dictionary whose keys are the languages names and whose
+          values are sets of the use cases found for that language
+    ''' 
+    dict= group_use_cases_by_languages(languages, df_usecases)
+    lista=[]
+    for conj in dict.values():
+        print(conj)
+        lista= lista +list(conj)
+    return Counter(lista)
     
+    
+
+def group_use_cases_by_languages (languages, df_usecases):
+    '''
+    INPUT: 
+        -studies : list o studies [OrderedDict(('Paper ID':id), ('Zone', Country_name)]
+        -df_usecases: dataframe with the following requirements:
+            * It should have as index the ID_PAPER
+            * It should have a column (named Clasificación) with the use cases
+            * The use cases of the study should have the format uc1/uc2/...
+              For example, Financial/Game/Notary/Others
+
+    OUTPUT: 
+        - {language:set(use cases)} dictionary whose keys are the languages names and whose
+          values are sets of the use cases found for that language
+    ''' 
+    return {language: extract_use_cases(studies,df_usecases) for language, studies in languages.items()}
+
+def extract_use_cases(studies, df_usecases):
+    '''
+    INPUT: 
+        -studies : list o studies [OrderedDict(('Paper ID':id), ('Zone', Country_name)]
+        -df_usecases: dataframe with the following requirements:
+            * It should have as index the ID_PAPER
+            * It should have a column (named Clasificación) with the use cases
+            * The use cases of the study should have the format uc1/uc2/...
+              For example, Financial/Game/Notary/Others
+
+    OUTPUT: 
+        - A set with all the use cases of all the studies in the list
+    '''
+    conj=set()
+    for study in studies:
+        conj=conj.union(get_use_cases(study, df_usecases))
+    return conj
+
+def get_use_cases(study,df_usecases):
+    '''
+    INPUT: 
+        -study : OrderedDict(('Paper ID':id), ('Zone', Country_name)
+        -df_usecases: dataframe with the following requirements:
+            * It should have as index the ID_PAPER
+            * It should have a column (named Clasificación) with the use cases
+            * The use cases of the study should have the format uc1/uc2/...
+              For example, Financial/Game/Notary/Others
+
+    OUTPUT: 
+        - A set with all the use cases of the study
+    '''
+    conj=set()
+    #Get the id of the study
+    id_slr=study[ID_PAPER].strip()
+    #Query de dataframe to get all the use cases
+    uc=df_usecases.loc[int(id_slr)].loc['Clasificación']
+    #As there can be nan data, we only can split if the data is not nan
+    if not pd.isna(uc):
+        c=set(uc.split("/"))
+        c={pal.strip() for pal in c}
+        conj=conj.union(c)
+    return conj
+
+
+  
+   

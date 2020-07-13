@@ -105,7 +105,6 @@ def create_dataframe_studies_contextualIQ(studies, filter=None):
 def create_dataframe_quality_facets(contextual_df,quality_df): 
     
     data = quality_df['IntrinsicIQ'].tolist()
-    print(data)
     contextual_df.insert(0,'IntrinsicIQ', data,True)
     return contextual_df
     

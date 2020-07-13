@@ -58,7 +58,7 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
     plt.show()
 
 
-def create_bar(dataframe, x_name, x_labels_rotation=90):
+def create_bar(dataframe, x_labels_rotation=90):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -67,7 +67,8 @@ def create_bar(dataframe, x_name, x_labels_rotation=90):
         -colours: Sequence or list of colours of the different lines
     '''
     # gca stands for 'get current axis'
-    plot = dataframe.plot(kind='bar',x=x_name)
+    #plot = dataframe.plot(kind='bar',x=x_name)
+    plot = dataframe.plot(kind='bar')
     plt.xticks(rotation=x_labels_rotation)
     plt.show()
 

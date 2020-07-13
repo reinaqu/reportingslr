@@ -56,3 +56,24 @@ def create_dataframe_languages_by_kind_and_type(languages):
     return pd.DataFrame(data=d, index=languages_kind)
 
 
+def create_dataframe_use_cases_count(languages, df_usecases):
+    '''
+    INPUT: 
+        -studies : list o studies [OrderedDict(('Paper ID':id), ('Zone', Country_name)]
+        -df_usecases: dataframe with the following requirements:
+            * It should have as index the ID_PAPER
+            * It should have a column (named Clasificación) with the use cases
+            * The use cases of the study should have the format uc1/uc2/...
+              For example, Financial/Game/Notary/Others
+
+    OUTPUT: 
+        - a dataframe
+    ''' 
+    dicc = count_use_cases (languages, df_usecases)
+    ordered =sorted(dicc.items(),key=lambda it:it[1], reverse=True)
+    use_cases, count = zip(*ordered)
+   
+    d ={'number of use cases': count}
+    res= pd.DataFrame(data=d, index=use_cases)
+    #res.index.name='Use cases'
+    return res

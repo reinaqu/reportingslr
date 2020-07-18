@@ -9,7 +9,7 @@ import geopandas as gpd
 from dataframes import create_dataframe_studies_by_country
 import numpy as np
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-from plotly import graph_objects as go
+import venn
 
 MARKER_SQUARE='s'
 MARKER_CIRCLE='o'
@@ -58,7 +58,7 @@ def create_line_plot_multiple_colums(dataframe, x_name, lines, colours,markers):
     plt.show()
 
 
-def create_bar(dataframe, x_labels_rotation=90):
+def create_bar(dataframe, x_labels_rotation=90, legend=True):
     '''
     INPUT:
         -dataframe: A panda dataframe with the data to be plotted.
@@ -70,6 +70,9 @@ def create_bar(dataframe, x_labels_rotation=90):
     #plot = dataframe.plot(kind='bar',x=x_name)
     plot = dataframe.plot(kind='bar')
     plt.xticks(rotation=x_labels_rotation)
+    ax1 = plt.gca()
+    ax1.xaxis.label.set_visible(False)
+    ax1.legend().set_visible(legend)
     plt.show()
 
     
@@ -184,4 +187,10 @@ def create_bubble(dataframe, rows, columns, count_name, x_name, y_name):
     plt.show()
 
 
+    
+def create_venn4(labels, names):
+    fig, ax = venn.venn4(labels, names=names)
 
+    #fig.savefig('venn4.png', bbox_inches='tight')
+    plt.show()
+    

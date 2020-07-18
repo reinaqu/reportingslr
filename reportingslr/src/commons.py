@@ -39,6 +39,14 @@ def count_by_property_pairs(items, property1,property2, filter=None):
         types=[(property1(item_tuple), property2(item_tuple)) for item_tuple in items.values() if filter(item_tuple)]
     return Counter(types)
 
+def group_by_property_pairs(items, property1,property2, filter=None):
+    dict=defaultdict(list)
+    for item_tuple in items.values():
+        if filter ==None or filter(item_tuple):
+            dict[(property1(item_tuple),property2(item_tuple))].append(item_tuple)
+    return dict
+    
+
 def create_dict(items, function_key, function_value, filter=None):
     if (filter == None):
         dict= { function_key(item_tuple): function_value(item_tuple) for item_tuple in items.values()}

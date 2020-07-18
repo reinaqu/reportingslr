@@ -85,6 +85,9 @@ def generate_grey_literature(studies, df_studies):
 def hyphenize(num):
     return '-' if int(num)<0 else num
 
+def hyphenize_if_nan(data):
+    return '-' if pd.isna(data) else data
+
 def get_id_slr_title_authors_venue (dataframe, id):
     row = dataframe[dataframe[ID_PAPER] == id]
 
@@ -136,3 +139,40 @@ def get_captures(dataframe, id):
     if pd.isna(res):
         res=-1
     return res
+
+def generate_studies_by_language(languages):
+    ordenado = sorted(languages.items())
+    for language, list_studies in ordenado:
+        ids = get_property(list_studies, lambda s:id(s))
+        ids_slr = get_property(list_studies, lambda s:id_slr(s))
+        kinds=get_property(list_studies, lambda s:language_kind(s))
+        types=get_property(list_studies, lambda s:language_type(s))
+        contexts=get_property(list_studies, lambda s:language_institution_origin(s))
+        paradigms=get_property(list_studies, lambda s:language_paradigms(s)) 
+        bclks=blockchains(list_studies) 
+        print(language , "\t", ids, "\t",ids_slr, "\t", kinds, "\t", types,"\t", contexts, "\t", paradigms, "\t", bclks)
+        
+def get_property(list_studies, feature):
+    return [feature(study) for study in list_studies]
+
+def generate_implementation_languages(dataframe):
+    txt='''\\textsf{{{}}} & {} & {} & {}\\\\'''
+    for index, row in dataframe.iterrows():
+        print(txt.format(index.strip(), row.loc['slrs ids'], 
+                        hyphenize_if_nan(row.loc['Level']),
+                        hyphenize_if_nan(row.loc['Paradigm'])))
+
+def generate_specification_languages(dataframe):
+    txt='''\\textsf{{{}}} & {} & {}\\\\'''
+    for index, row in dataframe.iterrows():
+        print(txt.format(index.strip(), row.loc['slrs ids'], 
+                        hyphenize_if_nan(row.loc['Paradigm'])))
+        
+def generate_implementation_languages_5(dataframe):
+    txt='''\\textsf{{{}}} & {} & {} & {} & {}\\\\'''
+    for index, row in dataframe.iterrows():
+        print(txt.format(index.strip(), row.loc['slrs ids'], 
+                        hyphenize_if_nan(row.loc['Focus']),
+                        hyphenize_if_nan(row.loc['Level']),
+                        hyphenize_if_nan(row.loc['Paradigm'])))
+        

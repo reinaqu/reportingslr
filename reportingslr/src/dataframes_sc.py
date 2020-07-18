@@ -12,7 +12,7 @@ from sc_utils import *
 def create_dataframe_languages_by_blokchain_platform(languages):
     '''
     INPUT:
-        - studies: Dict(language: [Dict{id_paper:DictReaderEntry(reference)}])
+        - languages: Dict(language: [Dict{id_paper:DictReaderEntry(reference)}])
     OUTPUT:
         - dataframe: panda.Dataframe with the following structure:
            * index: blockain platform
@@ -36,6 +36,38 @@ def create_dataframe_languages_by_context_and_kind(languages):
     d ={'kind of language':languages_kind,
         'number of languages': languages_count}
     return pd.DataFrame(data=d, index=bc_academia)
+
+
+def create_dataframe_languages_by_paradigm_and_kind(languages):
+    
+    dict_pairs = count_languages_by_paradigm_and_kind_flattened(languages)
+    print(dict_pairs)
+    
+    paradigm,languages_kind,languages_count = unzip_pairs_dict(dict_pairs)
+          
+    d ={'kind of language':languages_kind,
+        'number of languages': languages_count}
+    return pd.DataFrame(data=d, index=paradigm)
+
+# def create_labels_names_languages_by_paradigm(languages, filter=None):
+#     
+#     dict_pairs = group_languages_by_paradigm_and_kind(languages, filter)
+#     
+#     dict_mappings={'Imperative':'0001', 'Declarative':'0010', 'Symbolic':'0100','Unknown':'1000','Declarative,Imperative':'0011'}
+# 
+#     labels = {dict_mappings[key[0]]:get_languages_ids(list_studies) for key, list_studies in dict_pairs.items()}
+#     
+#     names=['Imperative', 'Declarative','Symbolic','Unknown']
+#     return labels, names
+
+def create_labels_names_languages_by_paradigm(languages, filter=None):
+    
+    dict_pairs = count_languages_by_paradigm_and_kind(languages, filter)
+    
+    dict_mappings=OrderedDict({'Imperative':'0001', 'Declarative':'0010', 'Symbolic':'0100','Unknown':'1000','Declarative,Imperative':'0011'})
+    labels = OrderedDict({dict_mappings[key[0]]:count for key, count in dict_pairs.items()})
+    return labels
+
 
 def create_dataframe_languages_by_context_and_type(languages):
     dict_pairs = count_languages_by_context_and_type(languages)
@@ -76,4 +108,39 @@ def create_dataframe_use_cases_count(languages, df_usecases):
     d ={'number of use cases': count}
     res= pd.DataFrame(data=d, index=use_cases)
     #res.index.name='Use cases'
+    return res
+
+def create_dataframe_count_languages_by_focus(df_lan):
+    # iterate through each row and select  
+    # 'Name' and 'Age' column respectively. 
+    lst=[]
+    for index, row in df_lan.iterrows(): 
+        conj_focuses = get_focus(row[FOCUS])
+        lst = lst + list(conj_focuses)
+    dicc = Counter(lst)
+    ordered = sorted((key, value) for key, value in dicc.items() if value >1)
+    focuses, count = zip(*ordered)
+    d ={'number of languages': count}
+    df= pd.DataFrame(data=count, index=focuses)        
+    df.index.name='Focus'
+    
+    #df=df_lan.groupby([FOCUS]).size().reset_index(name='number of languages')
+        
+    #df=df.set_index(FOCUS)
+    return df
+
+def create_dataframe_implementation_language_ordered_by(df_lang_feat, order_criteria):
+    filter = df_lang_feat['Kind'] == 'Implementation'
+    df_lang_feat['Paradigm'] = df_lang_feat['Paradigm'].str.strip()
+    df_lang_feat['Level'] = df_lang_feat['Level'].str.strip()
+    df_lang_feat['Focus'] = df_lang_feat['Focus'].str.strip()
+    res = df_lang_feat[filter].sort_values(by=order_criteria)
+    return res
+
+def create_dataframe_specification_language_ordered_by(df_lang_feat, order_criteria):
+    filter = df_lang_feat['Kind'] == 'Specification'
+    df_lang_feat['Paradigm'] = df_lang_feat['Paradigm'].str.strip()
+    df_lang_feat['Level'] = df_lang_feat['Level'].str.strip()
+    df_lang_feat['Focus'] = df_lang_feat['Focus'].str.strip()
+    res = df_lang_feat[filter].sort_values(by=order_criteria)
     return res

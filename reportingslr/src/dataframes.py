@@ -120,7 +120,7 @@ def create_dataframe_contextualIQ_count(contextualIQ_df):
     return df
 
 def create_dataframe_facets_count(facet_df):
-    #df= quality_df[[ID_PAPER,'IntrinsicIQ']].groupby(['IntrinsicIQ']).agg(name=('number of studies','count'))
+    #df= quality_df[[Idf=df.set_index(FOCUS)D_PAPER,'IntrinsicIQ']].groupby(['IntrinsicIQ']).agg(name=('number of studies','count'))
     df=facet_df.groupby(['IntrinsicIQ','ContextualIQ']).size().reset_index(name='number of studies')
     
     return df

@@ -7,6 +7,7 @@ Created on 29 jun. 2020
 from commons import *
 import numpy as np
 import pandas as pd
+from altair.vega.v4.schema.core import value
 
 BLOCKCHAIN ="Blockchain name"
 ID_LANG ="Language (ids studies)"
@@ -23,10 +24,20 @@ INDUSTRY_LABEL="Industry"
 STANDALONE_LABEL="Standalone"
 EXTENSION_LABEL="Extension"
 UNKNOWN_LABEL="Unknown"
+IMPERATIVE_PARADIGM="Paradigm : Imperative"
+DECLARATIVE_PARADIGM="Paradigm : Declarative"
+SYMBOLIC_PARADIGM="Paradigm : Symbolic"
+UNDETERMINE_PARADIGM="Paradigm : Undetermined}"
+IMPERATIVE_LABEL="Imperative"
+DECLARATIVE_LABEL="Declarative"
+DECLARATIVE_IMPERATIVE_LABEL="Declarative,Imperative"
+SYMBOLIC_LABEL="Symbolic"
+FOCUS="Proposal new focus"            
 
 ID_PAPER ="ID Paper"
 LANGUAGE_NAME= "Name"
 ID_SLR="ID SLR"
+
 def count_languages_by_blockchain(languages_list, filter=None):
     '''
     INPUT:
@@ -88,7 +99,46 @@ def count_languages_by_context_and_kind(languages, filter=None):
     INPUT: Dict(language:[OrderedDict(...)]
     '''
     dict ={language: studies[0] for language, studies in languages.items()}
-    return count_by_property_pairs(dict, lambda s:language_context(s), lambda s:language_kind(s),  filter)
+    return count_by_property_pairs(dict, lambda s:language_institution_origin(s), lambda s:language_kind(s),  filter)
+
+def count_languages_by_paradigm_and_kind (languages, filter=None):
+    dicc =group_languages_by_paradigm_and_kind(languages, filter)
+    return {key:len(list_value) for key,list_value in dicc.items()}
+
+def count_languages_by_paradigm_and_kind_flattened (languages, filter=None):
+    dicc =group_languages_by_paradigm_and_kind_flattened(languages, filter)
+    return {key:len(list_value) for key,list_value in dicc.items()}
+def group_languages_by_paradigm_and_kind (languages, filter=None):
+    dicc ={language: studies[0] for language, studies in languages.items()}
+    aux= group_by_property_pairs(dicc, lambda s:language_paradigms(s), lambda s:language_kind(s),  filter)
+#     res=dict()
+#     for key, list_value in aux.items():       
+#         if key[0]==DECLARATIVE_IMPERATIVE_LABEL:            
+#             tuple=(DECLARATIVE_LABEL,key[1])
+#             new_list_value = aux[tuple]+list_value
+#             res[tuple] = new_list_value
+#             tuple=(IMPERATIVE_LABEL,key[1])
+#             new_list_value = aux[tuple]+list_value
+#             res[tuple] = new_list_value 
+#         else:
+#             res[key]= list_value
+    return aux
+
+def group_languages_by_paradigm_and_kind_flattened (languages, filter=None):
+    dicc ={language: studies[0] for language, studies in languages.items()}
+    aux= group_by_property_pairs(dicc, lambda s:language_paradigms(s), lambda s:language_kind(s),  filter)
+    res=dict()
+    for key, list_value in aux.items():       
+        if key[0]==DECLARATIVE_IMPERATIVE_LABEL:            
+            tuple=(DECLARATIVE_LABEL,key[1])
+            new_list_value = aux[tuple]+list_value
+            res[tuple] = new_list_value
+            tuple=(IMPERATIVE_LABEL,key[1])
+            new_list_value = aux[tuple]+list_value
+            res[tuple] = new_list_value 
+        else:
+            res[key]= list_value
+    return res
 
 def count_languages_by_kind_and_type(languages, filter=None):
     dict ={language: studies[0] for language, studies in languages.items()}
@@ -96,7 +146,7 @@ def count_languages_by_kind_and_type(languages, filter=None):
 
 def count_languages_by_context_and_type(languages, filter=None):
     dict ={language: studies[0] for language, studies in languages.items()}
-    return count_by_property_pairs(dict, lambda l:language_context(l), lambda l:language_type(l),  filter)
+    return count_by_property_pairs(dict, lambda l:language_institution_origin(l), lambda l:language_type(l),  filter)
 
 def language_kind (study):
     res=UNKNOWN_LABEL
@@ -106,7 +156,7 @@ def language_kind (study):
         res=SPECIFICATION_LABEL
     return res
 
-def language_context (study):
+def language_institution_origin (study):
     res=UNKNOWN_LABEL
     if study[ACADEMIA_CONTEXT]=='Y' and  study[INDUSTRY_CONTEXT]=='N':
         res=ACADEMIA_LABEL
@@ -123,6 +173,18 @@ def language_type(language):
     return res
 
 
+def language_paradigms(language):
+    res=UNKNOWN_LABEL
+    if language[IMPERATIVE_PARADIGM]=='Y' and language[DECLARATIVE_PARADIGM]=='N':
+        res=IMPERATIVE_LABEL
+    elif language[DECLARATIVE_PARADIGM]=='Y' and language[IMPERATIVE_PARADIGM]=='N':
+        res=DECLARATIVE_LABEL
+    elif language[DECLARATIVE_PARADIGM]=='Y' and language[IMPERATIVE_PARADIGM]=='Y':
+        res=DECLARATIVE_IMPERATIVE_LABEL
+    elif language[SYMBOLIC_PARADIGM]=='Y':
+        res=SYMBOLIC_LABEL
+    return res
+
 def studies_by_language(studies):
     return group_by_property(studies, lambda s:language(s))
     
@@ -133,7 +195,16 @@ def language(study_dict):
         lang_name=study_dict[ID_SLR].strip()
     return lang_name    
 
+def get_languages_names(list_studies):
+    list_names = [language(study_dict) for study_dict in list_studies]
+    return str(list_names).replace('[', '').replace(']','').replace("'",'')
 
+def get_languages_ids(list_studies):
+    list_names = [id_slr(study_dict) for study_dict in list_studies]
+    return str(list_names).replace('[', '').replace(']','').replace("'",'')
+
+def id_slr(study_dict):
+    return study_dict[ID_SLR]
 def completeness(study):
     qa1 = has_language_name(study)
     qa2 = has_paradigm(study)
@@ -222,7 +293,6 @@ def count_use_cases (languages, df_usecases):
     dict= group_use_cases_by_languages(languages, df_usecases)
     lista=[]
     for conj in dict.values():
-        print(conj)
         lista= lista +list(conj)
     return Counter(lista)
     
@@ -288,5 +358,24 @@ def get_use_cases(study,df_usecases):
     return conj
 
 
-  
-   
+def get_focus(focus):
+    '''
+    INPUT: 
+        -study : OrderedDict(('Paper ID':id), ('Zone', Country_name)
+        -df_usecases: dataframe with the following requirements:
+            * It should have as index the ID_PAPER
+            * It should have a column (named Clasificación) with the use cases
+            * The use cases of the study should have the format uc1/uc2/...
+              For example, Financial/Game/Notary/Others
+
+    OUTPUT: 
+        - A set with all the use cases of the study
+    '''
+    conj=set()
+
+    #As there can be nan data, we only can split if the data is not nan
+    if not pd.isna(focus):
+        c=set(focus.split("/"))
+        c={pal.strip() for pal in c}
+        conj=conj.union(c)
+    return conj

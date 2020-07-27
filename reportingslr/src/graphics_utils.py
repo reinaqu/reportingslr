@@ -194,3 +194,8 @@ def create_venn4(labels, names):
     #fig.savefig('venn4.png', bbox_inches='tight')
     plt.show()
     
+def create_venn3(labels, names):
+    fig, ax = venn.venn3(labels, names=names)
+
+    #fig.savefig('venn4.png', bbox_inches='tight')
+    plt.show()

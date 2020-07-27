@@ -7,6 +7,7 @@ Created on 8 jul. 2020
 from sc_utils import *
 from csvbib_utils import *
 import pandas as pd
+from dataframes_sc import *
 
 def generate_languages_by_blockchain(languages_list, filter=None):
     
@@ -109,7 +110,6 @@ def get_citations_data(studies, df_ppmetrics, df_altimetrics, df_studies):
     df_ws = df_ppmetrics.loc[df_ppmetrics['Source']== 'Web of Science']
     res=[] 
     for study_id in sorted_ids:
-
         id, language = get_id_slr_language(df_studies, study_id)
         gs_cit=get_citation(df_gs, study_id)
         sc_cit=get_citation(df_sc, study_id)
@@ -119,23 +119,37 @@ def get_citations_data(studies, df_ppmetrics, df_altimetrics, df_studies):
     return res
 
 def get_id_slr_language (dataframe, id):
-    row = dataframe[dataframe[ID_PAPER] == id]
-    
-    return (row.iloc[0][ID_SLR], row.iloc[0]['Title'])
-
+    row = dataframe.loc[id]
+    #row=dataframe.index.get_loc(id)
+    #return (row.iloc[0][ID_SLR], row.iloc[0]['Title'])
+    print(id,row[ID_SLR], row['Title'])
+    return (row[ID_SLR], row['Title'])
 
 def get_citation (dataframe, id ):
-    row = dataframe[dataframe[ID_PAPER] == id]
-    papers = row.iloc[0]['Papers']
+#     row = dataframe[dataframe[ID_PAPER] == id]
+#     papers = row.iloc[0]['Papers']
+#     if papers != 0:
+#         res= row.iloc[0]['Citations']
+#     else:
+#         res=-1
+#     return res    
+    row = dataframe.loc[id]
+    papers = row['Papers']
+    print(id, papers)
     if papers != 0:
-        res= row.iloc[0]['Citations']
+        res= row['Citations']
     else:
         res=-1
     return res    
 
 def get_captures(dataframe, id):
-    row = dataframe[dataframe[ID_PAPER] == id]
-    res= row.iloc[0]['PlubmX-Captures']
+#     row = dataframe[dataframe[ID_PAPER] == id]
+#     res= row.iloc[0]['PlubmX-Captures']
+#     if pd.isna(res):
+#         res=-1
+#     return res
+    row = dataframe.loc[id]
+    res= row['PlubmX-Captures']
     if pd.isna(res):
         res=-1
     return res
@@ -176,3 +190,12 @@ def generate_implementation_languages_5(dataframe):
                         hyphenize_if_nan(row.loc['Level']),
                         hyphenize_if_nan(row.loc['Paradigm'])))
         
+def generate_languages_by_focus(dataframe):
+    tuple_list = create_dicc_group_languages_by_focus(dataframe)
+    for key, value in tuple_list:
+        print(key,'==>',value)
+    txt='''\\textsf{{{0}}} & {1} \\\\ 
+            \\tabucline{{1-2}}'''
+    for focus, languages in tuple_list:
+        str_langs= str(languages).replace("[","").replace("]","").replace("'","")
+        print(txt.format(focus, str_langs))

@@ -8,6 +8,7 @@ from commons import *
 import numpy as np
 import pandas as pd
 from altair.vega.v4.schema.core import value
+from asn1crypto._ffi import null
 
 BLOCKCHAIN ="Blockchain name"
 ID_LANG ="Language (ids studies)"
@@ -32,7 +33,7 @@ IMPERATIVE_LABEL="Imperative"
 DECLARATIVE_LABEL="Declarative"
 DECLARATIVE_IMPERATIVE_LABEL="Declarative,Imperative"
 SYMBOLIC_LABEL="Symbolic"
-FOCUS="Proposal new focus"            
+FOCUS="Focus"            
 
 ID_PAPER ="ID Paper"
 LANGUAGE_NAME= "Name"
@@ -379,3 +380,46 @@ def get_focus(focus):
         c={pal.strip() for pal in c}
         conj=conj.union(c)
     return conj
+
+def get_focus_abbrv(focus):
+    abrev= {'Business Process':'BP',
+            'Contract Composition': 'ConComp',
+            'Financial': 'Financial',
+            'Formalisation':'Formal',
+            'General Purpose':'GP',
+            'Improve Development':'ImpDev',
+            'Increase Level of Abstraction':'IncLoA',
+            'Interactions':'Inter',
+            'Legal': 'Legal',
+            'Model-driven':'MD',
+            'Natural Language':'NL',
+            'Ontology':'Ontol',
+            'Optimization':'Optim',
+            'Oracles':'Oracles',
+            'Other':'Other',
+            'Privacy':'Privacy',
+            'Safety':'Safety',
+            'Security':'Secur',
+            'Separation of Concerns':'SoC',
+            'Service-oriented':'SO',
+            'Trust':'Trust',
+            'Verification':'Verif',
+            'Virtual Machine':'VM',
+            'Visual Specification':'VisSpec'}
+    return abrev[focus]  
+
+def get_usecase_abbrv(usecase):
+    abrev= {'Data Provenance':'DataProv',
+            'Distributed Systems Security':'DSS',
+            'Financial': 'Financial',
+            'Game':'Game',
+            'IoT':'IoT',
+            'Legal Contracts': 'LegContr',
+            'Library':'Library',
+            'Notary':'Notary',
+            'Others':'Others',
+            'Public Sector': 'PubSec',
+            'Sharing Economy': 'SharEco',
+            'Wallet':'Wallet',
+            'null': 'null'}
+    return abrev[usecase]  

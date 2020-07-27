@@ -41,8 +41,7 @@ def create_dataframe_languages_by_context_and_kind(languages):
 def create_dataframe_languages_by_paradigm_and_kind(languages):
     
     dict_pairs = count_languages_by_paradigm_and_kind_flattened(languages)
-    print(dict_pairs)
-    
+       
     paradigm,languages_kind,languages_count = unzip_pairs_dict(dict_pairs)
           
     d ={'kind of language':languages_kind,
@@ -64,7 +63,7 @@ def create_labels_names_languages_by_paradigm(languages, filter=None):
     
     dict_pairs = count_languages_by_paradigm_and_kind(languages, filter)
     
-    dict_mappings=OrderedDict({'Imperative':'0001', 'Declarative':'0010', 'Symbolic':'0100','Unknown':'1000','Declarative,Imperative':'0011'})
+    dict_mappings=OrderedDict({'Imperative':'001', 'Declarative':'010', 'Symbolic':'100','Declarative,Imperative':'011'})
     labels = OrderedDict({dict_mappings[key[0]]:count for key, count in dict_pairs.items()})
     return labels
 
@@ -102,7 +101,8 @@ def create_dataframe_use_cases_count(languages, df_usecases):
         - a dataframe
     ''' 
     dicc = count_use_cases (languages, df_usecases)
-    ordered =sorted(dicc.items(),key=lambda it:it[1], reverse=True)
+    list_abbr =[(get_usecase_abbrv(key), value) for key,value in dicc.items()]
+    ordered =sorted(list_abbr,key=lambda it:it[1], reverse=True)
     use_cases, count = zip(*ordered)
    
     d ={'number of use cases': count}
@@ -118,7 +118,8 @@ def create_dataframe_count_languages_by_focus(df_lan):
         conj_focuses = get_focus(row[FOCUS])
         lst = lst + list(conj_focuses)
     dicc = Counter(lst)
-    ordered = sorted((key, value) for key, value in dicc.items() if value >1)
+  
+    ordered = sorted((get_focus_abbrv(key), value) for key, value in dicc.items() if value >1)
     focuses, count = zip(*ordered)
     d ={'number of languages': count}
     df= pd.DataFrame(data=count, index=focuses)        
@@ -128,6 +129,24 @@ def create_dataframe_count_languages_by_focus(df_lan):
         
     #df=df.set_index(FOCUS)
     return df
+
+def create_dicc_group_languages_by_focus(df_lan):
+    # iterate through each row and select  
+    # 'focuses' and 'languages' column respectively. 
+
+    dicc =defaultdict(list)
+    for index, row in df_lan.iterrows(): 
+        conj_focuses = get_focus(row[FOCUS])
+        for focus in conj_focuses:
+            dicc[focus].append(index)
+
+    ordered = sorted((key, sorted(value)) for key, value in dicc.items())
+   
+    #df=df_lan.groupby([FOCUS]).size().reset_index(name='number of languages')
+        
+    #df=df.set_index(FOCUS)
+    return ordered
+
 
 def create_dataframe_implementation_language_ordered_by(df_lang_feat, order_criteria):
     filter = df_lang_feat['Kind'] == 'Implementation'

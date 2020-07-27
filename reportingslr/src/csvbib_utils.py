@@ -92,7 +92,6 @@ def literature_type(study_tuple):
         res=GREY_LITERATURE_LABEL
     else:
         res=UNKNOWN_LABEL
-    print(study_tuple[ID_SLR],study_tuple[ID_PAPER], type)
     return res     
         
 def is_white_literature(study_tuple):

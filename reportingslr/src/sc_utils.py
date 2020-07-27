@@ -7,8 +7,7 @@ Created on 29 jun. 2020
 from commons import *
 import numpy as np
 import pandas as pd
-from altair.vega.v4.schema.core import value
-from asn1crypto._ffi import null
+
 
 BLOCKCHAIN ="Blockchain name"
 ID_LANG ="Language (ids studies)"
